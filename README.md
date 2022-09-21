@@ -1,3 +1,9 @@
+# Surreal React
+
+SurrealDB explorer.. its a work in progress but have fun :)
+
+![screenshot](https://raw.githubusercontent.com/rvdende/surrealreact/main/screenshot.png)
+
 # Live preview/test
 
 https://surrealreact.fly.dev/
