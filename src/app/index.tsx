@@ -29,13 +29,13 @@ const SurrealReactMain = () => {
 export const App = () => {
     return <ThemeProvider theme={themeMUIDark}>
         <CssBaseline />
-        <Container>
+        <Box>
             <SurrealReactMain />
             <Box sx={{ textAlign: 'center', mt: 4, opacity: 0.25, transition:'opacity linear 0.1s' , ':hover': { opacity: 1 } }}>
                 <IconButton color="inherit" href="https://github.com/rvdende/surrealreact">
                     <GitHub />
                 </IconButton>
             </Box>
-        </Container>
+        </Box>
     </ThemeProvider>
 }

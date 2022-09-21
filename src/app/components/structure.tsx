@@ -6,6 +6,7 @@ import {
     ListAltRounded
 } from "@mui/icons-material";
 import {
+    Box,
     Button,
     Divider,
     IconButton,
@@ -32,9 +33,10 @@ import {
     INamespace
 } from "../surrealhelpers"
 
+import { Link as RouterLink, useParams } from 'react-router-dom';
+
 
 export const Structure = () => {
-    let [showdata, setShowData] = useState<boolean>(false);
     let [nsList, setNsList] = useState<Await<ReturnType<typeof GetStructure>>>();
 
     useEffect(() => {
@@ -43,44 +45,39 @@ export const Structure = () => {
 
     if (!nsList) return <LinearProgress />
 
-    return <>
-        <List subheader={<ListSubheader>Namespaces</ListSubheader>}>
+    return <Paper sx={{ minWidth: 350, m: 0, p: 0, borderRadius: 0 }} >
+        <List sx={{ m: 0, p: 0 }}
+        // subheader={<ListSubheader>Namespaces</ListSubheader>}
+        >
             {nsList.map((item) => <NamespaceListItemComponent
                 key={item.ns}
                 namespace={item}
             />)}
         </List>
-
-        <Button color="success"
-            variant={showdata ? 'text' : "outlined"}
-            fullWidth
-            sx={{ mt: 2 }}
-            onClick={() => { setShowData(!showdata); }}
-        >Toggle Data</Button>
-
-        {showdata && <Paper sx={{ p: 2, overflow: 'auto' }}>
-            <Typography component="pre" sx={{ fontSize: '0.75em' }}>
-                <pre>{JSON.stringify(nsList, null, 2)}</pre>
-            </Typography>
-        </Paper>}
-    </>
+    </Paper>
 }
 
 
 const NamespaceListItemComponent = (props: { namespace: INamespace }) => {
+    const params = useParams();
     const [open, setOpen] = useState<boolean>(true);
+
     return <Paper elevation={0}>
         <ListItem
+            component={RouterLink}
+            to={`/ns/${props.namespace.ns}`}
             disableGutters
             color="primary.main"
             sx={{ p: 0, m: 0 }}
-            secondaryAction={<IconButton onClick={() => {
+            secondaryAction={<IconButton sx={{ opacity: 0.5 }} onClick={() => {
                 setOpen(!open);
             }}>
                 {open ? <ExpandLessTwoTone /> : <ExpandMoreTwoTone />}
             </IconButton>}
         >
-            <ListItemButton >
+            <ListItemButton
+                selected={(params.ns === props.namespace.ns) && !params.db && !params.tb}
+            >
                 <ListItemIcon sx={{ p: 0, m: 0 }} >
                     <Inventory2Rounded color="success" fontSize="small" />
                 </ListItemIcon>
@@ -88,29 +85,38 @@ const NamespaceListItemComponent = (props: { namespace: INamespace }) => {
             </ListItemButton>
         </ListItem>
 
-        {open && props.namespace.db.map(db => <DatabaseListItemComponent
-            key={db.dbname}
-            namespace={props.namespace}
-            db={db} />)}
-        <Divider />
+        {open && <DatabaseList ns={props.namespace} />}
+
     </Paper>
 }
 
+export const DatabaseList = (props: { ns: INamespace }) => {
+    return <>{props.ns.db.map(db => <DatabaseListItemComponent
+        key={db.dbname}
+        namespace={props.ns}
+        db={db} />)}
+    </>
+};
 
-const DatabaseListItemComponent = (props: { db: IDatabase, namespace: INamespace }) => {
+export const DatabaseListItemComponent = (props: { db: IDatabase, namespace: INamespace }) => {
     const [open, setOpen] = useState<boolean>(true);
+    const params = useParams();
 
-    return <Paper elevation={1} sx={{ ml: 2 }}>
+    return <Paper elevation={1} sx={{ m: 0.1, ml: 1 }}>
         <ListItem
             key={`${props.namespace.ns}_${props.db.dbname}`}
             disableGutters
-            secondaryAction={<IconButton onClick={() => {
+            component={RouterLink}
+            to={`/ns/${props.namespace.ns}/${props.db.dbname}`}
+            secondaryAction={<IconButton sx={{ opacity: 0.5 }} onClick={() => {
                 setOpen(!open);
             }}>
                 {open ? <ExpandLessTwoTone /> : <ExpandMoreTwoTone />}
             </IconButton>}
             sx={{ m: 0, p: 0 }}>
-            <ListItemButton>
+            <ListItemButton
+                selected={(params.ns === props.namespace.ns) && (params.db === props.db.dbname) && !params.tb}
+            >
                 <ListItemIcon>
                     <FolderRounded color="info" />
                 </ListItemIcon>
@@ -120,26 +126,39 @@ const DatabaseListItemComponent = (props: { db: IDatabase, namespace: INamespace
 
         {open && Object.entries(props.db.dbinfo.tb).map((v, i) => <TableListItemComponent
             key={v[0]}
+            ns={props.namespace.ns}
+            db={props.db.dbname}
             definition={v[1]}
             tablename={v[0]} />)}
     </Paper>
 }
 
 
-const TableListItemComponent = (props: { tablename: string, definition: string }) => {
+export const TableListItemComponent = (props: { tablename: string, definition: string, ns: string, db: string }) => {
+    const params = useParams();
+
+    const selected = (params.ns === props.ns) && (params.db === props.db) && (params.tb === props.tablename)
+
     return <Paper sx={{ ml: 2 }} elevation={2}>
         <ListItem
             key={props.tablename}
             disableGutters
-            sx={{ m: 0, p: 0 }}>
-            <ListItemButton>
+            component={RouterLink}
+            to={`/ns/${props.ns}/${props.db}/${props.tablename}`}
+            sx={{ m: 0, p: 0, mb: 0.5 }}>
+            <ListItemButton
+                selected={selected}
+                sx={{ m: 0, px: 1, py: 0.5 }}>
                 <ListItemIcon>
-                    <ListAltRounded color="primary" />
+                    <ListAltRounded color="primary" fontSize="small" />
                 </ListItemIcon>
                 <ListItemText
                     primary={props.tablename}
-                    primaryTypographyProps={{ color: 'primary.main' }}
-                    secondary={props.definition}
+                    primaryTypographyProps={{
+                        color: 'primary.main',
+                        m: 0, p: 0
+                    }}
+                // secondary={props.definition}
                 />
             </ListItemButton>
         </ListItem>

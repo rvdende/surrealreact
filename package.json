@@ -1,12 +1,13 @@
 {
     "name": "surrealreact",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "private": true,
     "dependencies": {
         "@emotion/react": "^11.10.4",
         "@emotion/styled": "^11.10.4",
         "@mui/icons-material": "^5.10.3",
         "@mui/material": "^5.10.5",
+        "@mui/x-data-grid-pro": "^5.17.3",
         "@testing-library/jest-dom": "^5.14.1",
         "@testing-library/react": "^13.0.0",
         "@testing-library/user-event": "^13.2.1",

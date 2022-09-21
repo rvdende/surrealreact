@@ -6,17 +6,17 @@ export const InfoForKV = async () => {
     return Object.keys(result[0].result.ns).map(ns => ({ ns, definition: r[ns] } as NamespaceListItem))
 }
 
-export const GetNamespace = async (ns:string) => {
+export const GetNamespace = async (ns: string) => {
     let r = await InfoForKV();
     return r.filter(i => i.ns === ns)[0]
 }
 
-export const InfoForNS = async (ns:string) => {
-    let r = await Surreal.Instance.query<[SurrealResult<null>,SurrealResult<NSInfo>]>(`USE NS ${ns}; INFO FOR NS;`)
+export const InfoForNS = async (ns: string) => {
+    let r = await Surreal.Instance.query<[SurrealResult<null>, SurrealResult<NSInfo>]>(`USE NS ${ns}; INFO FOR NS;`)
     return r[1].result;
 }
 
-export const InfoForDB = async (ns:string, db:string) => {
+export const InfoForDB = async (ns: string, db: string) => {
     let r = await Surreal.Instance.query(`USE NS ${ns} DB ${db}; INFO FOR DB;`);
     const output = r[1].result as DBInfo;
     return output;
@@ -26,29 +26,31 @@ export interface DBInfo {
     dl: {},
     dt: {},
     sc: {},
-    tb: { [index:string]: string } // todo array ?
+    tb: { [index: string]: string } // todo array ?
 }
 
 export const GetStructure = async () => {
     let kv = await InfoForKV();
 
-    let queries = kv.map( async n => {
-        let nsinfo = await InfoForNS(n.ns);
-        let dbnames = Object.keys(nsinfo.db)
-
-        let db: IDatabase[] = await Promise.all(dbnames.map( async dbname => {
-            let dbinfo = await InfoForDB(n.ns, dbname);
-            let o: IDatabase = { dbname, dbinfo }
-            return o
-        }))
-        
-        let output: INamespace = { ns: n.ns, define: n.definition, db }
-        return output
-    })
+    let queries = kv.map(GetStructureForNS);
 
     let result = await Promise.all(queries);
 
     return result;
+}
+
+export const GetStructureForNS = async (n: NamespaceListItem) => {
+    let nsinfo = await InfoForNS(n.ns);
+    let dbnames = Object.keys(nsinfo.db)
+
+    let db: IDatabase[] = await Promise.all(dbnames.map(async dbname => {
+        let dbinfo = await InfoForDB(n.ns, dbname);
+        let o: IDatabase = { dbname, dbinfo }
+        return o
+    }))
+
+    let output: INamespace = { ns: n.ns, define: n.definition, db }
+    return output
 }
 
 export interface INamespace {
@@ -66,9 +68,9 @@ export interface IDatabase {
 
 
 export interface NSInfo {
-    db: { [index:string]: string }
-    nl: { [index:string]: string }
-    nt: { [index:string]: string }
+    db: { [index: string]: string }
+    nl: { [index: string]: string }
+    nt: { [index: string]: string }
 }
 
 
@@ -93,3 +95,9 @@ export interface NamespaceResponse {
 
 
 export type Await<T> = T extends PromiseLike<infer U> ? U : T
+
+export async function SelectAllFromDb<T>( params : { ns: string, db: string, tb: string}) {
+    const o = await Surreal.Instance.query(`USE NS ${params.ns} DB ${params.db}; SELECT * FROM ${params.tb};`);
+    const ou = o[1].result;
+    return ou as T[];
+}
