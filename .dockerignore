@@ -1,0 +1,10 @@
+node_modules
+build
+buildserver
+.env
+cert.pem
+key.pem
+**/node_modules
+**/build
+devnotes.md
+history.txt
