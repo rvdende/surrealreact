@@ -21,7 +21,7 @@ surreal start --log debug --user root --pass root memory
 ```
 
 
-url: http://0.0.0.0:8000/rpc
-user: root
-pass: root
+url: http://0.0.0.0:8000/rpc   
+user: root   
+pass: root   
 
