@@ -84,7 +84,6 @@ export const getSession = () => {
 }
 
 export const connectDBSurreal = async () => {
-    console.log('connectDBSurreal');
     let session = getSession();
     if (!session) return false;
     await Surreal.Instance.connect(session.url);

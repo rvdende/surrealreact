@@ -1,5 +1,9 @@
 import { createTheme } from "@mui/material";
 
+import { StickyNote2TwoTone } from "@mui/icons-material";
+
+export const DocsIcon = StickyNote2TwoTone;
+
 export const themeMUIDark = createTheme({
     palette: {
       mode: "dark",

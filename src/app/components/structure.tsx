@@ -1,4 +1,5 @@
 import {
+    AddTwoTone,
     ExpandLessTwoTone,
     ExpandMoreTwoTone,
     FolderRounded,
@@ -34,6 +35,8 @@ import {
 } from "../surrealhelpers"
 
 import { Link as RouterLink, useParams } from 'react-router-dom';
+import { DefineComponent } from "./define";
+import { QueryComponent } from "./query";
 
 
 export const Structure = () => {
@@ -46,6 +49,9 @@ export const Structure = () => {
     if (!nsList) return <LinearProgress />
 
     return <Paper sx={{ minWidth: 350, m: 0, p: 0, borderRadius: 0 }} >
+        <Box sx={{ m: 1 }}>
+            <QueryComponent />
+        </Box>
         <List sx={{ m: 0, p: 0 }}
         // subheader={<ListSubheader>Namespaces</ListSubheader>}
         >

@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
     Link as RouterLink
 } from "react-router-dom";
+import { DocsIcon } from "./theme";
 
 export const Navbar = () => {
 
@@ -19,12 +20,12 @@ export const Navbar = () => {
         <Box sx={{ flex: 1 }} />
 
         <Button
-            startIcon={<StickyNote2TwoTone />}
+            startIcon={<DocsIcon />}
             target="_blank"
             href="https://surrealdb.com/docs"
         >Docs</Button>
 
-        <Divider orientation="vertical" sx={{ height: 40, mx: 1 }} />
+        <Divider orientation="vertical" sx={{  mx: 1 }} flexItem />
 
         <Tooltip title="Logout">
             <IconButton color="error"

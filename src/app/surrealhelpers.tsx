@@ -1,3 +1,4 @@
+import { GridSortModel } from "@mui/x-data-grid-pro";
 import Surreal from "../surrealdbjs";
 
 export const InfoForKV = async () => {
@@ -96,8 +97,43 @@ export interface NamespaceResponse {
 
 export type Await<T> = T extends PromiseLike<infer U> ? U : T
 
-export async function SelectAllFromDb<T>( params : { ns: string, db: string, tb: string}) {
-    const o = await Surreal.Instance.query(`USE NS ${params.ns} DB ${params.db}; SELECT * FROM ${params.tb};`);
-    const ou = o[1].result;
-    return ou as T[];
+export async function SelectAllFromDb<T>(params: {
+    ns: string,
+    db: string,
+    tb: string,
+    limit?: number,
+    start?: number,
+    sort?: GridSortModel
+}) {
+
+    let q = `USE NS ${params.ns} DB ${params.db}; SELECT * FROM ${params.tb}`;
+
+    if (params.sort && params.sort[0]) {
+        q += ` ORDER BY ${params.sort[0].field} ${params.sort[0].sort?.toUpperCase()}`
+    }
+
+    if (params.limit !== undefined) q += ` LIMIT ${params.limit}`;
+    if (params.start) q += ` START ${params.start}`;
+    q += '; ';
+    q += `SELECT count(id) FROM ${params.tb} GROUP BY NONE;`
+
+    const o = await Surreal.Instance.query<any>(q);
+    const rows = o[1].result as T[];
+    const rowCount = o[2].result.length > 0 ? o[2].result[0].count as number : 0;
+
+    let result: RowPagination<T> = {
+        rows,
+        rowCount
+    }
+
+    return result;
+}
+
+export const clone = (input: any) => {
+    return JSON.parse(JSON.stringify(input));
+}
+
+export interface RowPagination<T> {
+    rows: T[],
+    rowCount: number
 }

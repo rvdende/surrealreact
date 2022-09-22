@@ -23,6 +23,7 @@ export default class Live extends Emitter {
 
 		// @ts-expect-error ready was never set
 		if (this.#db.ready) {
+			console.log('run open')
 			this.open();
 		}
 
