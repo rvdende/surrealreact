@@ -1,4 +1,4 @@
-import { CloseTwoTone, HomeRounded, LogoutTwoTone, StickyNote2TwoTone } from "@mui/icons-material";
+import { LogoutRounded, HomeRounded, LogoutTwoTone, StickyNote2 } from "@mui/icons-material";
 import { IconButton, Paper, Button, Box, Typography, Divider, Tooltip, Dialog, DialogActions } from "@mui/material";
 import { useState } from "react";
 import {
@@ -28,13 +28,13 @@ export const Navbar = () => {
         <Divider orientation="vertical" sx={{  mx: 1 }} flexItem />
 
         <Tooltip title="Logout">
-            <IconButton color="error"
+            <IconButton 
                 onClick={() => {
                     setShowLogoutConfirmDialog(true);
 
                 }}
             >
-                <CloseTwoTone />
+                <LogoutRounded />
             </IconButton>
         </Tooltip>
 

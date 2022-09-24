@@ -1,7 +1,7 @@
 import { Box, Button, Divider, FormControlLabel, LinearProgress, Paper, Switch, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useNavigation, useParams } from "react-router-dom";
-import { RowPagination, SelectAllFromDb } from "../surrealhelpers";
+import { DBInfo, InfoForTable, RowPagination, SelectAllFromDb, TBInfo } from "../surrealhelpers";
 
 // https://mui.com/x/react-data-grid/#commercial-version
 import {
@@ -13,6 +13,8 @@ import {
 
 import { DeleteTwoTone } from "@mui/icons-material";
 import Surreal from "../../surrealdbjs";
+import { JsonViewer } from "./jsonViewer";
+import { TableInfoComponent } from "./tableInfo";
 
 LicenseInfo.setLicenseKey('11dfa392be05d10d58887edf4f20e775T1JERVI6NDE2MjgsRVhQSVJZPTE2ODEzMzgwODU1NTIsS0VZVkVSU0lPTj0x');
 
@@ -22,7 +24,6 @@ export const getModel = (params: { ns: string, db: string, tb: string }): GridSo
     let item = localStorage.getItem(query);
 
     if (item) {
-        console.log(item);
         return JSON.parse(item);
     }
     // JSON.parse(localStorage.getItem(JSON.stringify({ ns: params.ns, db: params.db, tb: params.tb }))
@@ -31,6 +32,9 @@ export const getModel = (params: { ns: string, db: string, tb: string }): GridSo
 
 export const TableViewComponent = () => {
     const params = useParams() as { ns: string, db: string, tb: string };
+
+    const [tbInfo, setTbInfo] = useState<TBInfo>();
+
     const [data, setData] = useState<RowPagination<any>>();
     const navigation = useNavigation();
     // const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +54,7 @@ export const TableViewComponent = () => {
             if (dolive) triggerLiveRefresh(liverefresher + 1);
         }, 1000)
 
+        InfoForTable(params.ns, params.db, params.tb).then(setTbInfo);
 
         SelectAllFromDb<any>({
             ns: params.ns,
@@ -69,29 +74,29 @@ export const TableViewComponent = () => {
 
     return <Paper sx={{ width: '100%', p: 0 }} elevation={0}>
 
-        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }}>
 
             <FormControlLabel control={<Switch onChange={(e) => { setDoLive(e.target.checked); if (e.target.checked) triggerLiveRefresh(1); localStorage.setItem('doLiveRefresh', e.target.checked.toString()) }} />}
                 label="Live Polling" sx={{ ml: 1 }} checked={dolive} />
 
-            <Divider sx={{ mr: 1 }} orientation="vertical" flexItem />
-
+            {/* <Divider sx={{ mr: 1 }} orientation="vertical" flexItem /> */}
+            <Box sx={{ flex: 1 }} />
             <Button
                 startIcon={<DeleteTwoTone />}
+                color="error"
                 onClick={async () => {
                     const r = await Surreal.Instance.query(`USE NS ${params.ns} DB ${params.db}; REMOVE TABLE ${params.tb};`);
                     console.log(r);
 
                 }}
             >DELETE TABLE</Button>
-
-
-
         </Box>
+
+        <TableInfoComponent tbInfo={tbInfo} ns={params.ns} db={params.db} tb={params.tb} />
 
         <DataGridPro
             // key={JSON.stringify(params)}
-            density="compact"            
+            density="compact"
             autoHeight
             page={page}
             pageSize={limit}
@@ -121,11 +126,8 @@ export const TableViewComponent = () => {
         // loading={isLoading}
         />
 
-        {/* <Paper>
-            <Typography>
-                <pre>{JSON.stringify(data, null,2)}</pre>
-            </Typography>
-        </Paper> */}
+
+
     </Paper>
 }
 

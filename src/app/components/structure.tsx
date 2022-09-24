@@ -1,5 +1,4 @@
 import {
-    AddTwoTone,
     ExpandLessTwoTone,
     ExpandMoreTwoTone,
     FolderRounded,
@@ -8,8 +7,6 @@ import {
 } from "@mui/icons-material";
 import {
     Box,
-    Button,
-    Divider,
     IconButton,
     LinearProgress,
     List,
@@ -17,10 +14,7 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    ListSubheader,
-    Paper,
-    Typography
-} from "@mui/material"
+    Paper} from "@mui/material"
 
 import {
     useEffect,
@@ -35,8 +29,8 @@ import {
 } from "../surrealhelpers"
 
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { DefineComponent } from "./define";
 import { QueryComponent } from "./query";
+import { JsonViewer } from "./jsonViewer";
 
 
 export const Structure = () => {
@@ -60,6 +54,8 @@ export const Structure = () => {
                 namespace={item}
             />)}
         </List>
+
+        <JsonViewer data={nsList} display={false} />
     </Paper>
 }
 

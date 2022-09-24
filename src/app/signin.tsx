@@ -1,4 +1,4 @@
-import { AlertColor, Box, Typography, Alert, TextField, Button, CircularProgress } from "@mui/material";
+import { AlertColor, Box, Typography, Alert, TextField, Button, CircularProgress, Container, Paper, Link } from "@mui/material";
 import { useState } from "react";
 import Surreal from "../surrealdbjs";
 
@@ -31,45 +31,61 @@ export const Signin = (props: { onConnect?: () => void }) => {
                 localStorage.setItem('pass', pass);
                 if (props.onConnect) props.onConnect();
             };
-        } catch (err:any) {
+        } catch (err: any) {
             setAlert({ message: err.message, severity: 'error' })
         }
     }
 
-    return <Box sx={{ mt: 2 }}>
-        <Typography variant="h4">Surreal DB Explorer</Typography>
+    return <Container maxWidth={"xs"}>
+        <Paper sx={{ mt: 2, p: 2 }}>
+            <Typography variant="h4">
+                <Link href="https://surrealdb.com/"><Typography component="span" color="white" variant="h4">Surreal</Typography><Typography component="span" color="primary" variant="h4">DB</Typography></Link> Explorer
+            </Typography>
+            
+            
 
-        {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
+            <TextField
+                label="url"
+                value={url}
+                autoFocus
+                onChange={(e) => { setUrl(e.target.value); }}
+                placeholder="https://yourserverurl/rpc"
+                fullWidth
+                margin="normal"
+            />
 
-        <TextField
-            label="url"
-            value={url}
-            autoFocus
-            onChange={(e) => { setUrl(e.target.value); }}
-            placeholder="https://yourserverurl/rpc"
-            fullWidth
-            margin="normal"
-        />
+            <Box sx={{ textAlign:'right'}}>
+                Need <Link href="http://137.66.15.177/">http</Link> or <Link href="https://surrealreact.fly.dev/">https</Link>?
+            </Box>
 
-        <TextField
-            label="user"
-            value={user}
-            onChange={(e) => { setUser(e.target.value); }}
-            fullWidth
-            margin="normal"
-        />
+            <TextField
+                label="user"
+                value={user}
+                onChange={(e) => { setUser(e.target.value); }}
+                fullWidth
+                placeholder="root"
+                margin="normal"
+            />
 
-        <TextField
-            label="pass"
-            type="password"
-            value={pass}
-            onChange={(e) => { setPass(e.target.value); }}
-            fullWidth
-            margin="normal"
-        />
+            <TextField
+                label="pass"
+                type="password"
+                value={pass}
+                onChange={(e) => { setPass(e.target.value); }}
+                placeholder="password"
+                fullWidth
+                margin="normal"
+            />
 
-        <Button variant="contained" onClick={() => { connectDB(); }}>Connect</Button>
-    </Box>
+            <Button sx={{ mt: 2 }} fullWidth variant="contained" size="large" onClick={() => { connectDB(); }}>Connect</Button>
+
+            {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
+
+            <Typography sx={{ opacity: 0.5, mt: 2 }}>
+                This is a browser only app, so your login credentials are safe and at no point sent to our servers. Feel free to look at the code or clone the github repo and run the explorer on your own if you prefer.
+            </Typography>
+        </Paper>
+    </Container>
 }
 
 

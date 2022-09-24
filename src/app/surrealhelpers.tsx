@@ -23,11 +23,26 @@ export const InfoForDB = async (ns: string, db: string) => {
     return output;
 }
 
+export const InfoForTable = async (ns: string, db: string, tb: string) => {
+    let r = await Surreal.Instance.query(`USE NS ${ns} DB ${db}; INFO FOR TABLE ${tb};`);
+    const output = r[1].result as TBInfo;
+    return output;
+}
+
+
+
 export interface DBInfo {
-    dl: {},
-    dt: {},
-    sc: {},
+    dl: { [index: string]: string },
+    dt: { [index: string]: string },
+    sc: { [index: string]: string },
     tb: { [index: string]: string } // todo array ?
+}
+
+export interface TBInfo {
+    ev: { [index: string]: string },
+    fd: { [index: string]: string },
+    ft: { [index: string]: string },
+    ix: { [index: string]: string }
 }
 
 export const GetStructure = async () => {
@@ -136,4 +151,9 @@ export const clone = (input: any) => {
 export interface RowPagination<T> {
     rows: T[],
     rowCount: number
+}
+
+export interface IScope {
+    scopeName: string
+    definition: string
 }

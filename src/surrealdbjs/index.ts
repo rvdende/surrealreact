@@ -45,11 +45,13 @@ export type Patch = AddPatch | RemovePatch | ReplacePatch | MovePatch | CopyPatc
 
 interface ResultOk<T> {
 	result: T
+	status: "OK" | string
 	error?: never
 }
 
 interface ResultErr {
 	result?: never
+	status: string
 	error: Error
 }
 

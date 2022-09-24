@@ -1,40 +1,48 @@
 
 export interface SDefinition {
-    syntax: string
-    url: string
-
+	statement: string, // "USE" | "LET" | "BEGIN" | "CANCEL" | "COMMIT" | "IF" | "SELECT" | "INSERT" | "CREATE" | "UPDATE" | "RELATE" | "DELETE" | "DEFINE" | "REMOVE" | "INFO",
+	syntax?: string
+	url?: string
+	parsed?: any
+	structure?: SDefinition[]
 }
 
-export const sqldef: SDefinition[] = [];
+export const sqldefinitions: SDefinition[] = [];
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/use',
-    syntax: `USE [ NS @ns ] [ DB @db ];`
+sqldefinitions.push({
+	statement: 'USE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/use',
+	syntax: `USE [ NS @ns ] [ DB @db ];`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/let',
-    syntax: `LET $@parameter = @value;`
+sqldefinitions.push({
+	statement: 'LET',
+	url: 'https://surrealdb.com/docs/surrealql/statements/let',
+	syntax: `LET $@parameter = @value;`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/begin',
-    syntax: 'BEGIN [ TRANSACTION ];'
+sqldefinitions.push({
+	statement: 'BEGIN',
+	url: 'https://surrealdb.com/docs/surrealql/statements/begin',
+	syntax: `BEGIN [ TRANSACTION ];`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/cancel',
-    syntax: 'CANCEL [ TRANSACTION ];'
+sqldefinitions.push({
+	statement: 'CANCEL',
+	url: 'https://surrealdb.com/docs/surrealql/statements/cancel',
+	syntax: `CANCEL [ TRANSACTION ];`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/commit',
-    syntax: 'COMMIT [ TRANSACTION ];'
+sqldefinitions.push({
+	statement: 'COMMIT',
+	url: 'https://surrealdb.com/docs/surrealql/statements/commit',
+	syntax: `COMMIT [ TRANSACTION ];`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/ifelse',
-    syntax: `IF @condition THEN
+sqldefinitions.push({
+	statement: 'IF',
+	url: 'https://surrealdb.com/docs/surrealql/statements/ifelse',
+	syntax: `IF @condition THEN
 	@expression
 [ ELSE IF @condition THEN
 	@expression ... ]
@@ -43,9 +51,10 @@ sqldef.push({
 END`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/select',
-    syntax: `SELECT @projections
+sqldefinitions.push({
+	statement: 'SELECT',
+	url: 'https://surrealdb.com/docs/surrealql/statements/select',
+	syntax: `SELECT @projections
 	FROM @targets
 	[ WHERE @condition ]
 	[ SPLIT [ AT ] @field ... ]
@@ -65,9 +74,10 @@ sqldef.push({
 ;`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/insert',
-    syntax: `INSERT [ IGNORE ] INTO @what
+sqldefinitions.push({
+	statement: 'INSERT',
+	url: 'https://surrealdb.com/docs/surrealql/statements/insert',
+	syntax: `INSERT [ IGNORE ] INTO @what
 	[ @value
 	  | (@fields) VALUES (@values)
 		[ ON DUPLICATE KEY UPDATE @field = @value ... ]
@@ -75,9 +85,10 @@ sqldef.push({
 ;`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/create',
-    syntax: `CREATE @targets
+sqldefinitions.push({
+	statement: 'CREATE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/create',
+	syntax: `CREATE @targets
 	[ CONTENT @value
 	  | SET @field = @value ...
 	]
@@ -87,9 +98,10 @@ sqldef.push({
 ;`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/update',
-    syntax: `UPDATE @targets
+sqldefinitions.push({
+	statement: 'UPDATE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/update',
+	syntax: `UPDATE @targets
 	[ CONTENT @value
 	  | MERGE @value
 	  | PATCH @value
@@ -102,9 +114,10 @@ sqldef.push({
 ;`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/relate',
-    syntax: `RELATE @from -> @table -> @with
+sqldefinitions.push({
+	statement: 'RELATE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/relate',
+	syntax: `RELATE @from -> @table -> @with
 	[ CONTENT @value
 	  | SET @field = @value ...
 	]
@@ -114,9 +127,10 @@ sqldef.push({
 ;`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/delete',
-    syntax: `DELETE @targets
+sqldefinitions.push({
+	statement: 'DELETE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/delete',
+	syntax: `DELETE @targets
 	[ WHERE @condition ]
 	[ RETURN [ NONE | BEFORE | AFTER | DIFF | @projections ... ]
 	[ TIMEOUT @duration ]
@@ -124,9 +138,11 @@ sqldef.push({
 ;`
 });
 
-sqldef.push({
-    url: '',
-    syntax: `DEFINE [
+sqldefinitions.push({
+	statement: 'DEFINE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/define',
+	structure: [],
+	syntax: `DEFINE [
 	NAMESPACE @name
 	| DATABASE @name
 	| LOGIN @name ON [ NAMESPACE | DATABASE ] [ PASSWORD @pass | PASSHASH @hash ]
@@ -160,9 +176,10 @@ sqldef.push({
 	| INDEX @name ON [ TABLE ] @table [ FIELDS | COLUMNS ] @fields [ UNIQUE ]
 ]`});
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/remove',
-    syntax: `REMOVE [
+sqldefinitions.push({
+	statement: 'REMOVE',
+	url: 'https://surrealdb.com/docs/surrealql/statements/remove',
+	syntax: `REMOVE [
         NAMESPACE @name
         | DATABASE @name
         | LOGIN @name ON [ NAMESPACE | DATABASE ]
@@ -175,9 +192,10 @@ sqldef.push({
     ]`
 });
 
-sqldef.push({
-    url: 'https://surrealdb.com/docs/surrealql/statements/info',
-    syntax: `INFO FOR [
+sqldefinitions.push({
+	statement: 'INFO',
+	url: 'https://surrealdb.com/docs/surrealql/statements/info',
+	syntax: `INFO FOR [
         KV
         | NS | NAMESPACE
         | DB | DATABASE
@@ -185,3 +203,16 @@ sqldef.push({
         | TABLE @table
     ];`
 });
+
+
+export const prettifySQL = (raw: string) => {
+	return "todo";
+}
+
+
+// export const findSqlDef = (raw: string) => {
+// 	let thissqldef = sqldefinitions.filter(def => def.syntax.split(' ')[0] === raw.split(' ')[0]);
+// 	console.log(thissqldef);
+// 	if (!thissqldef || thissqldef.length !== 1) throw Error('could not find sql definition');
+// 	return thissqldef[0];
+// }
