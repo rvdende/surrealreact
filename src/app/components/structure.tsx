@@ -120,7 +120,7 @@ export const DatabaseListItemComponent = (props: { db: IDatabase, namespace: INa
                 selected={(params.ns === props.namespace.ns) && (params.db === props.db.dbname) && !params.tb}
             >
                 <ListItemIcon>
-                    <FolderRounded color="info" />
+                    <FolderRounded color="info" fontSize="small" />
                 </ListItemIcon>
                 <ListItemText primary={props.db.dbname} primaryTypographyProps={{ color: 'info.main' }} />
             </ListItemButton>

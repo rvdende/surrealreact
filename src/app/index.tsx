@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, CircularProgress, Container, CssBaseline, IconButton, LinearProgress, ThemeProvider, Typography } from "@mui/material";
 import { themeMUIDark } from "./theme";
 import { GitHub } from "@mui/icons-material";
-
+import packageJson from '../../package.json'
 /** Handles signin */
 const SurrealReactMain = () => {
     const [logged, setLogged] = useState<boolean>();
@@ -31,11 +31,17 @@ export const App = () => {
         <CssBaseline />
         <Box>
             <SurrealReactMain />
-            <Box sx={{ textAlign: 'center', mt: 4, opacity: 0.25, transition:'opacity linear 0.1s' , ':hover': { opacity: 1 } }}>
-                <IconButton color="inherit" href="https://github.com/rvdende/surrealreact">
-                    <GitHub />
-                </IconButton>
-            </Box>
+
+            <FooterDisplay />
+
         </Box>
     </ThemeProvider>
 }
+
+export const FooterDisplay = () => <Container sx={{ textAlign: 'center', mt: 4, pb: 4 }}>
+    <Button color="inherit"
+        href="https://github.com/rvdende/surrealreact"
+        target="_blank"
+        sx={{ opacity: 0.25, transition: 'opacity linear 0.1s', ':hover': { opacity: 1 } }}
+        startIcon={<GitHub />}>{packageJson.name} {packageJson.version}</Button>
+</Container>
