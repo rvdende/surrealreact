@@ -12,7 +12,7 @@ const SurrealReactMain = () => {
 
     useEffect(() => {
         // reconnect on load
-        connectDBSurreal().then((logged) => { setLogged(logged); });
+        connectDBSurreal().then((logged) => { setLogged(logged); }).catch( err => { localStorage.clear(); window.location.reload(); });
     }, [])
 
     if (logged) return <Router />
