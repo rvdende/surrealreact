@@ -109,6 +109,9 @@ export interface NamespaceResponse {
     }
 }
 
+export interface KVInfo {
+    ns: { [index: string]: string }
+}
 
 export type Await<T> = T extends PromiseLike<infer U> ? U : T
 

@@ -31,9 +31,7 @@ export const App = () => {
         <CssBaseline />
         <Box>
             <SurrealReactMain />
-
             <FooterDisplay />
-
         </Box>
     </ThemeProvider>
 }

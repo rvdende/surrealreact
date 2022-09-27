@@ -8,7 +8,7 @@ export const InfoComponent = (props: {
     name: string,
     definition: string,
     color?: any,
-    nsDbTb: { ns: string, db: string, tb?: string }
+    nsDbTb?: { ns: string, db: string, tb?: string }
 }) => {
     const [deleted, setDeleted] = useState<boolean>();
 
@@ -56,8 +56,12 @@ export const InfoComponent = (props: {
         <Box id="delete" sx={{ opacity: 0, transition: "opacity linear 0.2s" }}>
             <IconButton size="small" color="error" onClick={async () => {
 
-                let query = `USE NS ${props.nsDbTb.ns} DB ${props.nsDbTb.db}; REMOVE ${props.type} ${props.name}`
-                if (props.nsDbTb.tb) query += ` ON TABLE ${props.nsDbTb.tb}`;
+                let query = ``;
+                if (props.nsDbTb) {
+                    if (props.nsDbTb?.ns) query += `USE NS ${props.nsDbTb.ns} DB ${props.nsDbTb.db}; REMOVE ${props.type} ${props.name}`
+                    if (props.nsDbTb.tb) query += ` ON TABLE ${props.nsDbTb.tb}`;
+                }
+
                 query += ';';
 
                 const result = await Surreal.Instance.query(query);

@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
     Link as RouterLink
 } from "react-router-dom";
+import { QueryComponent } from "./components/query";
 import { DocsIcon } from "./theme";
 
 export const Navbar = () => {
@@ -17,7 +18,13 @@ export const Navbar = () => {
 
         {/* <Typography sx={{ mt: 1, ml: 1, opacity: 0.75 }}>{localStorage.getItem('url')}</Typography> */}
 
-        <Box sx={{ flex: 1 }} />
+        <Divider orientation="vertical" sx={{ mx: 1 }} flexItem />
+
+        <QueryComponent />
+
+        <Divider orientation="vertical" sx={{ mx: 1 }} flexItem />
+
+        {/* <Box sx={{ flex: 1 }} /> */}
 
         <Button
             startIcon={<DocsIcon />}
@@ -25,10 +32,10 @@ export const Navbar = () => {
             href="https://surrealdb.com/docs"
         >Docs</Button>
 
-        <Divider orientation="vertical" sx={{  mx: 1 }} flexItem />
+        <Divider orientation="vertical" sx={{ mx: 1 }} flexItem />
 
         <Tooltip title="Logout">
-            <IconButton 
+            <IconButton
                 onClick={() => {
                     setShowLogoutConfirmDialog(true);
 

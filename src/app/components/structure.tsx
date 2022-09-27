@@ -29,23 +29,30 @@ import {
 } from "../surrealhelpers"
 
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import { QueryComponent } from "./query";
 import { JsonViewer } from "./jsonViewer";
+import { appEvents } from "../events";
 
 
 export const Structure = () => {
     let [nsList, setNsList] = useState<Await<ReturnType<typeof GetStructure>>>();
 
+    // if query is run in navbar then refresh the list.
+    const querySuccessHandler = () => {
+        GetStructure().then(setNsList);
+    }
+
     useEffect(() => {
-        GetStructure().then(setNsList)
+        GetStructure().then(setNsList);
+        appEvents.on("querySuccess", querySuccessHandler);
+
+        return () => {
+            appEvents.removeListener("querySuccess", querySuccessHandler)
+        }
     }, [])
 
     if (!nsList) return <LinearProgress />
 
     return <Paper sx={{ minWidth: 350, m: 0, p: 0, borderRadius: 0 }} >
-        <Box sx={{ m: 1 }}>
-            <QueryComponent />
-        </Box>
         <List sx={{ m: 0, p: 0 }}
         // subheader={<ListSubheader>Namespaces</ListSubheader>}
         >

@@ -1,26 +1,137 @@
 /** https://surrealdb.com/docs/surrealql/statements/define */
 
 import { AddTwoTone, ArrowBackTwoTone, CloseTwoTone, PlayArrowRounded, PlayArrowTwoTone } from "@mui/icons-material"
-import { Box, Dialog, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, TextField, Tooltip, Typography } from "@mui/material"
-import { useState } from "react";
-import Surreal from "../../surrealdbjs";
-import { clone } from "../surrealhelpers";
+import { Alert, Box, Button, Dialog, DialogTitle, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, Snackbar, TextField, Tooltip, Typography } from "@mui/material"
+import { useEffect, useState } from "react";
+import Surreal, { Result } from "../../surrealdbjs";
+import { appEvents } from "../events";
 import { DocsIcon, MiniTitle } from "../theme";
 import { sqldefinitions } from "./query_definitions";
+
+const getCommandHistory = () => {
+    let commandsRaw = localStorage.getItem('commandHistory');
+    if (commandsRaw !== null) {
+        let commandHistory: string[] = JSON.parse(commandsRaw);
+        let b = commandHistory.filter(c => c !== "");
+        // https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
+        let uniq = [...new Set(b)]
+        localStorage.setItem("commandHistory", JSON.stringify(uniq));
+        return uniq;
+    } else return [];
+}
 
 export const QueryComponent = () => {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
+    const [result, setResult] = useState<void | Result<unknown>[] | undefined>(undefined);
+    const [runState, setRunState] = useState<"success" | "error" | "info">("info");
+    const [runMessage, setRunMessage] = useState<string>();
+    const [focusBlur, setFocusBlur] = useState(false);
+    const [commandHistory, setCommandHistory] = useState<string[]>(getCommandHistory());
+    const [commandHistoryIndex, setCommandHistoryIndex] = useState(0);
 
+    const runQuery = async () => {
+        setRunState("info")
+
+
+
+        const result = await Surreal.Instance.query(query.split("\n").join("")).catch(err => {
+            console.log(err)
+            setRunState("error");
+            setRunMessage(err.message);
+        });
+        setResult(result);
+        if (result) {
+            if (result.length === result.filter(i => i.status === 'OK').length) {
+
+                // add to commandHistory;
+                commandHistory.push(query);
+                setCommandHistory(commandHistory)
+                localStorage.setItem('commandHistory', JSON.stringify(commandHistory));
+                // end add to commandHistory
+
+                setRunState("success");
+                setQuery("");
+                appEvents.emit("querySuccess", result);
+            }
+        }
+    }
+
+    function downHandler(ev: KeyboardEvent) {
+        const key = ev.key;
+        if (key === "ArrowUp") {
+            // show previous query.
+            let indexnum = commandHistoryIndex - 1;
+            if (indexnum === 0) {
+                setQuery("");
+            } else {
+                setQuery(commandHistory.at(indexnum) || "");
+            }
+            setCommandHistoryIndex(indexnum);
+        }
+
+        if (key === "ArrowDown") {
+            // show previous query.
+            let indexnum = commandHistoryIndex + 1;
+            if (indexnum === 0) {
+                setQuery("");
+            } else {
+                setQuery(commandHistory.at(indexnum) || "");
+            }
+
+            setCommandHistoryIndex(indexnum);
+        }
+
+        if (key === "Enter" && focusBlur && ev.ctrlKey) {
+            console.log('runQuery!')
+            runQuery();
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener("keydown", downHandler);
+        // Remove event listeners on cleanup
+        return () => {
+            window.removeEventListener("keydown", downHandler);
+        };
+    }, [focusBlur, query]);
 
     return <>
-        <IconButton color="success" onClick={() => { setOpen(true); }}>
-            <AddTwoTone fontSize="small" />
-        </IconButton>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
+            <Button
+                color={runState}
+                sx={{ height: '100%' }}
+                onClick={() => { setOpen(true); }}
+            >Query</Button>
+            <TextField size="small"
+                color={runState}
+                fullWidth
+                multiline
+                onFocus={() => { setFocusBlur(true); }}
+                onBlur={() => { setFocusBlur(false); }}
+                value={query}
+                onChange={(e) => {
+                    setQuery(e.target.value);
+                }}
+            />
+            <IconButton color={runState} sx={{ ml: 0.5 }} onClick={runQuery}>
+                <PlayArrowRounded />
+            </IconButton>
+        </Box>
+
+        <Snackbar
+            open={!!runMessage}
+            autoHideDuration={6000}
+            onClose={() => {
+                setRunState("info");
+                setRunMessage(undefined);
+            }}
+        >
+            <Alert severity={runState}>{runMessage}</Alert>
+        </Snackbar>
 
         <Dialog
             open={open}
-
             onClose={() => { setOpen(false); }}
             sx={{ m: 6 }}
         >
@@ -38,22 +149,30 @@ export const QueryComponent = () => {
                         </IconButton>
                     </Box>
 
-                    <Typography sx={{ p: 1 }}>QUERY</Typography>
+                    <Typography sx={{ p: 1 }}>Query</Typography>
 
                     <Box sx={{ flex: 1 }} />
 
                     <Box>
-                        <Tooltip title="Documentation for DEFINE">
+                        <Tooltip title="SurrealQL">
                             <IconButton
                                 color="primary"
-                                href="https://surrealdb.com/docs/surrealql/statements/define"
+                                href="https://surrealdb.com/docs/surrealql"
                                 target="_blank"
                                 aria-label="docs"
-                                onClick={() => { setOpen(false); }}
                             >
                                 <DocsIcon />
                             </IconButton>
                         </Tooltip>
+
+                        <IconButton
+                            color="success"
+                            aria-label="docs"
+                            onClick={runQuery}
+                        >
+                            <PlayArrowRounded />
+                        </IconButton>
+
                     </Box>
 
 
@@ -61,52 +180,52 @@ export const QueryComponent = () => {
                 </Paper>
             </DialogTitle>
 
-            <Paper sx={{ height: '100%' }}>
-                <QueryForm />
+            <Paper sx={{ height: '100%', minWidth: '50vw' }}>
+                <QueryForm onQueryChange={(query) => { setQuery(query); }} result={result} />
             </Paper>
 
         </Dialog>
     </>
 }
 
-const QueryForm = (props: {}) => {
+const QueryForm = (props: { onQueryChange: (query: string) => void, result: any }) => {
+    const [query, setQuery] = useState<string>("");
+    // const [result, setResult] = useState<any>();
 
-    const [query, setQuery] = useState<string[]>(["DEFINE", ""]);
-    const [result, setResult] = useState<any>();
-
-    let querystring = query.join(' ') + `;`;
+    // let querystring = query.join(' ') + `;`;
 
     return <>
 
-        <Paper sx={{ borderRadius: 0, display: 'flex', flexDirection: 'row' }} elevation={0} >
-            <Box sx={{ flex: 1, p: 1.5 }}>
+        <Paper sx={{ borderRadius: 0, display: 'flex', flexDirection: 'column' }} elevation={0} >
 
-                <MiniTitle label="QUERY:" />
-                <Typography component={"pre"}>{querystring}</Typography>
+            <TextField
+                size="small"
+                fullWidth
+                label="query"
+                sx={{ pt: 0.5 }}
+                multiline
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); props.onQueryChange(e.target.value); }}
+            />
 
-                {result && <>
+            <Box sx={{ flex: 1 }}>
+                <Box sx={{ px: 1 }}>
+
+                </Box>
+
+                <Box sx={{ width: 50 }}>
                     <MiniTitle label="RESULT:" />
-                    <Typography component={"pre"}>{JSON.stringify(result)}</Typography>
-                </>}
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton
-                    color="success"
-                    aria-label="docs"
-                    onClick={async () => {
-                        const result = await Surreal.Instance.query(querystring);
-                        setResult(result);
-                    }}
-                >
-                    <PlayArrowRounded />
-                </IconButton>
+                    {props.result && <>
+                        <Typography component={"pre"} sx={{ whiteSpace: 'wrap', wordWrap: 'break-word' }}>{JSON.stringify(props.result)}</Typography>
+                    </>}
+                </Box>
             </Box>
         </Paper>
 
 
 
 
-        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        {/* <Box sx={{ display: 'flex', flexDirection: 'row' }}>
             <QueryKeywordDropdown
                 value={query[0]}
                 onChange={(value) => {
@@ -130,7 +249,7 @@ const QueryForm = (props: {}) => {
                     }}
                 />
             </Box>
-        </Box>
+        </Box> */}
 
     </>
 }
