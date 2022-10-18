@@ -11,8 +11,14 @@ const SurrealReactMain = () => {
     const [logged, setLogged] = useState<boolean>();
 
     useEffect(() => {
+        const timeout = setTimeout(() => {
+            localStorage.clear(); window.location.reload();
+        }, 5000);
         // reconnect on load
-        connectDBSurreal().then((logged) => { setLogged(logged); }).catch( err => { localStorage.clear(); window.location.reload(); });
+        connectDBSurreal().then((logged) => {
+            clearTimeout(timeout);
+            setLogged(logged);
+        }).catch(err => { localStorage.clear(); window.location.reload(); });
     }, [])
 
     if (logged) return <Router />

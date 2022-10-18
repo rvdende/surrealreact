@@ -2,10 +2,15 @@ import { AlertColor, Box, Typography, Alert, TextField, Button, CircularProgress
 import { useState } from "react";
 import Surreal from "../surrealdbjs";
 
+const getDefaultUrl = () => {
+    if (window.location.protocol === 'http:') return "http://0.0.0.0:8000/rpc"
+    return "https://yourserver/rpc";
+}
+
 export const Signin = (props: { onConnect?: () => void }) => {
-    const [url, setUrl] = useState<string>(localStorage.getItem('url') || "");
-    const [user, setUser] = useState<string>(localStorage.getItem('user') || "");
-    const [pass, setPass] = useState<string>(localStorage.getItem('pass') || "");
+    const [url, setUrl] = useState<string>(localStorage.getItem('url') || getDefaultUrl());
+    const [user, setUser] = useState<string>(localStorage.getItem('user') || "root");
+    const [pass, setPass] = useState<string>(localStorage.getItem('pass') || "root");
     const [alert, setAlert] = useState<{ message: string, severity: AlertColor }>();
 
     const connectDB = async () => {

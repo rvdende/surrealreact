@@ -17,6 +17,7 @@ import { TableViewComponent } from "./components/table";
 
 import { Navbar } from "./navbar";
 import { KVComponent } from "./components/kv";
+import { Testing } from "./components/testing";
 
 
 export const Router = () => {
@@ -46,7 +47,7 @@ export const Router = () => {
                 <Route path="/ns/:ns" element={<NamespaceViewComponent />} />
                 <Route path="/ns/:ns/:db" element={<DatabaseViewComponent />} />
                 <Route path="/ns/:ns/:db/:tb" element={<TableViewComponent />} />
-
+                <Route path="/testing" element={<Testing />} />
             </Route>))} />
 }
 
