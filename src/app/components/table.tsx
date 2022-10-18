@@ -135,11 +135,11 @@ const deriveColumnsFromRows = (rows: any[]) => {
     let keys: any = { id: true };
 
     rows.forEach(r => {
-        Object.keys(r).forEach(k => { keys[k] = true })
+        Object.keys(flatten(r)).forEach(k => { keys[k] = true });
     })
 
     const columns: GridColumns = Object.keys(keys).map(k => {
-        return { field: k, flex: 1 }
+        return { field: k, flex: 1, valueGetter: (props) => { return objectByString(props.row,k) } }
     })
 
     return columns;
@@ -154,7 +154,7 @@ const TableInfoComponent = (props: {
 }) => {
     if (!props.tbInfo) return <LinearProgress />
     const tbInfo = props.tbInfo;
-    const nsDbTb = { ns: props.ns, db: props.db, tb: props.tb}
+    const nsDbTb = { ns: props.ns, db: props.db, tb: props.tb }
 
     return <Paper sx={{ p: 0.5 }} elevation={2}>
 
@@ -182,4 +182,42 @@ const TableInfoComponent = (props: {
             nsDbTb={nsDbTb}
             definition={ix[1]} />)}
     </Paper>
+}
+
+/** turns nested json objects into dot notation format. */
+export function flatten(inObj: any) {
+    const res: any = {};
+
+    (function recurse(obj, current?: any) {
+        for (const key in obj) {
+            if (key) {
+                const value = obj[key];
+                const newKey = current ? current + '.' + key : key; // joined key with dot
+                if (value && typeof value === 'object') {
+                    // res[newKey] = value;
+                    recurse(value, newKey); // it's a nested object, so do it again
+                } else {
+                    res[newKey] = value; // it's not an object, so set the property
+                }
+            }
+        }
+    })(inObj);
+
+    return res;
+}
+
+/** lookup a value from a nested object by using dotnotion */
+export function objectByString(obj: any, str: string): any {
+    str = str.replace(/\[(\w+)\]/g, ".$1"); // convert indexes to properties
+    str = str.replace(/^\./, ""); // strip a leading dot
+    const a = str.split(".");
+    for (let i = 0, n = a.length; i < n; ++i) {
+        const k = a[i];
+        if (k in obj) {
+            obj = obj[k];
+        } else {
+            return;
+        }
+    }
+    return obj;
 }
