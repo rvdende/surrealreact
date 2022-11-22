@@ -1,6 +1,6 @@
-# Surreal React
+# Surreal React for the playground for Data Driver
 
-SurrealDB explorer.. its a work in progress but have fun :)
+    *From the author: SurrealDB explorer.. its a work in progress but have fun 😊*
 
 ![screenshot](https://raw.githubusercontent.com/rvdende/surrealreact/main/screenshot.png)
 
