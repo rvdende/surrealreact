@@ -11,7 +11,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { UserCount } from "./UserCount";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { SurrealType } from "../../surrealdbjs/surreal_zod_info";
 
 export function TreeStructure({ className }: { className: string }) {

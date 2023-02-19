@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaTimes } from "react-icons/fa";
 import { HiXMark } from "react-icons/hi2";
 import { useAppState, getSurreal } from "../../state/useAppState";
 import { Table } from "./Table";
@@ -11,13 +10,13 @@ export function ViewTB() {
   const router = useRouter();
   const slugs = dbSlugs(router.query.slug);
 
-  const nsinfo = appstate.info_ns.find((i) => i.ns === slugs.ns)?.nsinfo;
+  // const nsinfo = appstate.info_ns.find((i) => i.ns === slugs.ns)?.nsinfo;
 
   if (!slugs.ns || !slugs.db || !slugs.tb) return null;
 
-  const dbinfo = appstate.info_db.find(
-    (i) => i.ns === slugs.ns && i.db === slugs.db
-  )?.dbinfo;
+  // const dbinfo = appstate.info_db.find(
+  //   (i) => i.ns === slugs.ns && i.db === slugs.db
+  // )?.dbinfo;
 
   return (
     <div className="paper ml-0 flex flex-col gap-4 md:ml-3">

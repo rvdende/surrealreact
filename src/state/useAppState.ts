@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { AuthType, SurrealClient, TBInfo } from "../surrealdbjs";

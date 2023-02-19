@@ -1,27 +1,25 @@
 import Link from "next/link";
-import { ReactNode } from "react";
 import { FaGithub } from "react-icons/fa";
 import packageJson from "../../package.json";
 
 export function Footer() {
   return (
     <section className="mt-12 flex flex-row justify-center">
-      <SourceLink>
-        {packageJson.name} {packageJson.version}
-      </SourceLink>
+      <SourceLink />
     </section>
   );
 }
 
-export function SourceLink({ children }: { children?: ReactNode }) {
+export function SourceLink() {
   return (
     <Link
       href="https://github.com/rvdende/surrealreact"
       target="_blank"
       className="self-center"
     >
-      <button className="self-center">
+      <button className="gap-2 self-center">
         <FaGithub className="icon" />
+        <span className="self-center">{packageJson.version}</span>
       </button>
     </Link>
   );

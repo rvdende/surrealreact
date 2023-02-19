@@ -1,31 +1,26 @@
 import { useRouter } from "next/router";
-import { dbSlugs, isActive } from "./TreeStructure";
+import { dbSlugs } from "./TreeStructure";
 
 import {
-  AccessorFn,
-  ColumnHelper,
   createColumnHelper,
-  DeepKeys,
   flexRender,
   getCoreRowModel,
   useReactTable,
   PaginationState,
 } from "@tanstack/react-table";
-import { useState, useReducer, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { getSurreal } from "../../state/useAppState";
 import flatten from "flat";
 import { SurrealResult } from "../../surrealdbjs";
-import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import {
   BsChevronDoubleLeft,
   BsChevronDoubleRight,
   BsChevronLeft,
   BsChevronRight,
 } from "react-icons/bs";
-import { HiChevronDoubleLeft } from "react-icons/hi2";
 
-type UnknownRow = { id: string } & { [index: string]: unknown };
+// type UnknownRow = { id: string } & { [index: string]: unknown };
 
 function deriveColumnsFromRows<
   T extends R[],
@@ -66,17 +61,17 @@ function deriveColumnsFromRows<
 export function Table() {
   const slugs = dbSlugs(useRouter().query.slug);
   const [rows, setRows] = useState<never[]>();
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   const [pageCount, setPageCount] = useState(-1);
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
 
-  const fetchDataOptions = {
-    pageIndex,
-    pageSize,
-  };
+  // const fetchDataOptions = {
+  //   pageIndex,
+  //   pageSize,
+  // };
 
   // const defaultData = useMemo(() => [], []);
 
@@ -133,7 +128,7 @@ export function Table() {
           setRows(data_rows);
       })
       .catch(console.error);
-  }, [slugs.ns, slugs.db, slugs.tb, pageSize, pageIndex]);
+  }, [slugs.ns, slugs.db, slugs.tb, pageSize, pageIndex, pageCount, rows]);
 
   if (!rows) return <div>loading...</div>;
 

@@ -12,7 +12,7 @@ export function DBView() {
   const router = useRouter();
   const slugs = dbSlugs(router.query.slug);
 
-  const nsinfo = appstate.info_ns.find((i) => i.ns === slugs.ns)?.nsinfo;
+  // const nsinfo = appstate.info_ns.find((i) => i.ns === slugs.ns)?.nsinfo;
 
   if (!slugs.ns || !slugs.db) return null;
 
