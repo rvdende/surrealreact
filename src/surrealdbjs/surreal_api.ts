@@ -300,7 +300,6 @@ export class SurrealClient {
     if (this.db) headers.DB = this.db;
     if (this.ns) headers.NS = this.ns;
     if (this.sc) headers.SC = this.sc;
-
     return headers;
   };
 
@@ -310,7 +309,6 @@ export class SurrealClient {
       method: "post",
       headers: this.getHeaders(),
       body: sql,
-      mode: "cors",
     }).then((r) => r.json())) as Promise<T>;
     return result;
   };
