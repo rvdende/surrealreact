@@ -1,10 +1,17 @@
 import { useAppState } from "../../state/useAppState";
-import { BiData, BiServer, BiShield, BiTable } from "react-icons/bi";
+import {
+  BiChevronDown,
+  BiChevronUp,
+  BiData,
+  BiServer,
+  BiShield,
+  BiTable,
+} from "react-icons/bi";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { UserCount } from "./UserCount";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { SurrealType } from "../../surrealdbjs/surreal_zod_info";
 
 export function TreeStructure({ className }: { className: string }) {
@@ -12,71 +19,76 @@ export function TreeStructure({ className }: { className: string }) {
   const slug = useRouter().query.slug;
 
   return (
-    <section className={clsx("panel mt-0 flex flex-col gap-0.5", className)}>
+    <section className={clsx("mt-0 flex flex-col", className)}>
       {appstate.info_kv?.ns &&
         Object.keys(appstate.info_kv.ns).map((ns, v) => {
           const nsinfo = appstate.info_ns.find((i) => i.ns === ns)?.nsinfo;
           if (!nsinfo) return null;
+
+          const ns_href = `/ns/${ns}`;
+          const ns_expanded = appstate.treeUIdata[ns_href]?.collapsed ?? false;
+
           return (
-            <div key={`ns${v}${ns}`} className={"flex flex-col gap-0.5 "}>
+            <div key={`ns${v}${ns}`} className={"flex flex-col "}>
               <TreeItem
                 active={isActive(slug, ns)}
                 type="ns"
                 text={ns}
-                href={`/ns/${ns}`}
+                href={ns_href}
               >
                 <UserCount count={nsinfo ? Object.keys(nsinfo.nl).length : 0} />
               </TreeItem>
 
-              {Object.keys(nsinfo.db).map((db, i) => {
-                const dbinfo = appstate.info_db.find(
-                  (i) => i.ns === ns && i.db === db
-                )?.dbinfo;
+              {ns_expanded &&
+                Object.keys(nsinfo.db).map((db, i) => {
+                  const dbinfo = appstate.info_db.find(
+                    (i) => i.ns === ns && i.db === db
+                  )?.dbinfo;
 
-                if (!dbinfo) return null;
+                  if (!dbinfo) return null;
 
-                return (
-                  <div
-                    key={`${ns}_${db}_${i}`}
-                    className={"flex flex-col gap-0.5"}
-                  >
-                    <TreeItem
-                      text={db}
-                      key={`db${i}_${ns}_${db}`}
-                      href={`/ns/${ns}/${db}`}
-                      classNameWrap="ml-3.5"
-                      active={isActive(slug, ns, db)}
-                      type="db"
-                    >
-                      <UserCount count={Object.keys(dbinfo.dl).length} />
-                    </TreeItem>
+                  const db_href = `/ns/${ns}/${db}`;
+                  const db_expanded =
+                    appstate.treeUIdata[db_href]?.collapsed ?? false;
 
-                    {dbinfo &&
-                      Object.keys(dbinfo.sc).map((sc, x) => (
-                        <TreeItem
-                          key={`sc${i}_${x}_${ns}_${db}_${sc}`}
-                          active={isActive(slug, ns, db, sc)}
-                          type="sc"
-                          classNameWrap="ml-7"
-                          text={sc}
-                          href={`/ns/${ns}/${db}/${sc}`}
-                        />
-                      ))}
+                  return (
+                    <div key={`${ns}_${db}_${i}`} className={"flex flex-col"}>
+                      <TreeItem
+                        text={db}
+                        key={`db${i}_${ns}_${db}`}
+                        href={db_href}
+                        active={isActive(slug, ns, db)}
+                        type="db"
+                      >
+                        <UserCount count={Object.keys(dbinfo.dl).length} />
+                      </TreeItem>
 
-                    {dbinfo &&
-                      Object.keys(dbinfo.tb).map((tb, y) => (
-                        <TreeItem
-                          key={`tb${i}_${y}_${ns}_${db}_${tb}`}
-                          type="tb"
-                          active={isActive(slug, ns, db, tb)}
-                          classNameWrap="ml-7"
-                          text={tb}
-                          href={`/ns/${ns}/${db}/${tb}`}
-                        />
-                      ))}
-                  </div>
-                );
-              })}
+                      {db_expanded &&
+                        dbinfo &&
+                        Object.keys(dbinfo.sc).map((sc, x) => (
+                          <TreeItem
+                            key={`sc${i}_${x}_${ns}_${db}_${sc}`}
+                            active={isActive(slug, ns, db, sc)}
+                            type="sc"
+                            text={sc}
+                            href={`/ns/${ns}/${db}/${sc}`}
+                          />
+                        ))}
+
+                      {db_expanded &&
+                        dbinfo &&
+                        Object.keys(dbinfo.tb).map((tb, y) => (
+                          <TreeItem
+                            key={`tb${i}_${y}_${ns}_${db}_${tb}`}
+                            type="tb"
+                            active={isActive(slug, ns, db, tb)}
+                            text={tb}
+                            href={`/ns/${ns}/${db}/${tb}`}
+                          />
+                        ))}
+                    </div>
+                  );
+                })}
             </div>
           );
         })}
@@ -89,26 +101,52 @@ function TreeItem({
   text,
   active,
   children,
-  classNameWrap,
   type,
 }: {
   href: string;
   text: string;
   active: boolean;
   children?: ReactNode;
-  classNameWrap?: string;
   type: SurrealType;
 }) {
+  // const [expanded, setExpanded] = useState(false);
+  const appstate = useAppState();
+
+  const expanded = appstate.treeUIdata[href]?.collapsed ?? false;
+
+  const pl = {
+    ns: "pl-0",
+    db: "pl-3",
+    tb: "pl-6",
+    sc: "pl-6",
+  }[type];
+
+  const showTreeCollapseButton = {
+    ns: true,
+    db: true,
+    tb: false,
+    sc: false,
+  }[type];
+
   return (
-    <Link href={href} className={classNameWrap}>
-      <button
-        className={clsx(
-          "flex w-full flex-row justify-start",
-          active ? "active" : " "
-        )}
-      >
-        <TreeItemContent text={text} type={type}>
+    <Link href={href} className={clsx(pl)}>
+      <button className={clsx("mb-1 w-full", active ? "active" : " ")}>
+        <TreeItemContent text={text} type={type} className="flex-1">
           {children}
+
+          {showTreeCollapseButton && (
+            <TreeCollapseButton
+              value={expanded}
+              onChange={() => {
+                appstate.set({
+                  treeUIdata: {
+                    ...appstate.treeUIdata,
+                    [href]: { collapsed: !expanded },
+                  },
+                });
+              }}
+            />
+          )}
         </TreeItemContent>
       </button>
     </Link>
@@ -118,12 +156,11 @@ function TreeItem({
 export function TreeItemContent({
   text,
   children,
-  className,
   type,
+  className,
 }: {
   text: string;
   children?: ReactNode;
-  classNameWrap?: string;
   className?: string;
   type: SurrealType;
 }) {
@@ -142,16 +179,9 @@ export function TreeItemContent({
   }[type];
 
   return (
-    <div
-      className={clsx(
-        "flex flex-row justify-start gap-1 self-center",
-        color,
-        className
-      )}
-    >
+    <div className={clsx("flex flex-row gap-2", color, className)}>
       {icon}
-      <div className="self-center text-xs">{text}</div>
-      <div className="flex-1" />
+      <div className="flex-1 self-center text-left text-xs">{text}</div>
       {children}
     </div>
   );
@@ -174,4 +204,28 @@ export function isActive(
   const slugs = dbSlugs(query);
 
   return slugs.ns === ns && slugs.db === db && slugs.tb === tb;
+}
+
+function TreeCollapseButton({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <div
+      className="button m-0 rounded-full bg-transparent p-0 text-gray-500"
+      onClick={(e) => {
+        if (value === true) e.preventDefault();
+        onChange(!value);
+      }}
+    >
+      {value ? (
+        <BiChevronUp className="icon" />
+      ) : (
+        <BiChevronDown className="icon" />
+      )}
+    </div>
+  );
 }

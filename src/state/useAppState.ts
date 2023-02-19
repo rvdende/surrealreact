@@ -19,6 +19,8 @@ type Provider = {
   };
   connected: boolean;
   treeHidden: boolean;
+  /** store stuff like collapse/expanded state */
+  treeUIdata: { [index: string]: { collapsed: boolean } };
   querytext: string;
   queryResult: string;
   set: (prop: Partial<Provider>) => void;
@@ -47,6 +49,7 @@ export const useAppState = create<Provider>()(
         },
         connected: false,
         treeHidden: false,
+        treeUIdata: {},
         /// default query in the navbar
         querytext: `USE NS test DB cool; CREATE somedata CONTENT ${JSON.stringify(
           {

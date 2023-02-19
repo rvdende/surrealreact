@@ -4,8 +4,8 @@ import { useAppState } from "../../state/useAppState";
 import { DBView } from "./DBView";
 import { NSView } from "./NSView";
 import { Table } from "./Table";
-import { Toolbar } from "./Toolbar";
 import { TreeStructure } from "./TreeStructure";
+import { ViewTB } from "./ViewTB";
 
 export function Explorer() {
   const router = useRouter();
@@ -22,15 +22,16 @@ export function Explorer() {
   const showNS = ns && !db && !tb;
   const showDB = ns && db && !tb;
 
+  const onLandingPage = router.pathname === "/";
+
   return (
     <>
-      <Toolbar />
-
-      <section className="mx-4 grid grid-cols-12">
+      <section className="grid grid-cols-12 px-3">
         {!appstate.treeHidden && (
           <TreeStructure
             className={clsx(
-              "col-span:6 md:col-span-4 lg:col-span-3 xl:col-span-2"
+              !onLandingPage && "hidden md:block", //hidden on mobile on sub pages
+              "col-span-full md:col-span-4 lg:col-span-3 xl:col-span-2"
             )}
           />
         )}
@@ -39,14 +40,22 @@ export function Explorer() {
           className={clsx(
             appstate.treeHidden
               ? "col-span-full"
-              : "col-span-6 md:col-span-8 lg:col-span-9 xl:col-span-10"
+              : "col-span-full md:col-span-8 lg:col-span-9 xl:col-span-10"
           )}
         >
+          {onLandingPage && (
+            <div className="paper ml-0 flex flex-col gap-3 md:ml-3">
+              <h1>Hi there!</h1>
+              <hr />
+              <p>Thank you for using SurrealReact</p>
+            </div>
+          )}
+
           {showNS && <NSView />}
 
           {showDB && <DBView />}
 
-          {showTable && <Table />}
+          {showTable && <ViewTB />}
         </div>
       </section>
     </>

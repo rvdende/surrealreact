@@ -17,8 +17,8 @@ export function NSView() {
   if (!slugs.ns) return <span>ns error</span>;
 
   return (
-    <div className="paper mt-4 flex flex-col gap-4 p-0">
-      <section className="mb-0 flex flex-row gap-4 p-4 pb-0">
+    <div className="paper ml-0 flex flex-col gap-4 md:ml-3">
+      <section className="mb-0 flex flex-row gap-4 pb-0">
         <TreeItemContent text={slugs.ns} type="ns" className="pl-1" />
 
         <div className="flex-1" />

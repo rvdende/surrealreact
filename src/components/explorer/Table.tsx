@@ -16,6 +16,14 @@ import clsx from "clsx";
 import { getSurreal } from "../../state/useAppState";
 import flatten from "flat";
 import { SurrealResult } from "../../surrealdbjs";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
+import {
+  BsChevronDoubleLeft,
+  BsChevronDoubleRight,
+  BsChevronLeft,
+  BsChevronRight,
+} from "react-icons/bs";
+import { HiChevronDoubleLeft } from "react-icons/hi2";
 
 type UnknownRow = { id: string } & { [index: string]: unknown };
 
@@ -127,38 +135,39 @@ export function Table() {
       .catch(console.error);
   }, [slugs.ns, slugs.db, slugs.tb, pageSize, pageIndex]);
 
-  if (!rows) return null;
+  if (!rows) return <div>loading...</div>;
 
   return (
-    <div className={clsx("grid grid-cols-12 ")}>
-      <div className="col-span-full flex items-center gap-2">
+    <div className={clsx("m-0 grid grid-cols-12")}>
+      <div
+        className={clsx(
+          table.getPageCount() === 1 ? "hidden" : "block",
+          "col-span-full flex items-center gap-2 pb-3"
+        )}
+      >
         <button
-          className="rounded border p-1"
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<<"}
+          <BsChevronDoubleLeft className="icon" />
         </button>
         <button
-          className="rounded border p-1"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<"}
+          <BsChevronLeft className="icon" />
         </button>
         <button
-          className="rounded border p-1"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          {">"}
+          <BsChevronRight className="icon" />
         </button>
         <button
-          className="rounded border p-1"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
         >
-          {">>"}
+          <BsChevronDoubleRight className="icon" />
         </button>
         <span className="flex items-center gap-1">
           <div>Page</div>
@@ -168,7 +177,7 @@ export function Table() {
           </strong>
         </span>
         <span>{}</span>
-        <span className="flex items-center gap-1">
+        <span className={clsx("flex items-center gap-1", "hidden md:block")}>
           | Go to page:
           <input
             type="number"
@@ -181,6 +190,7 @@ export function Table() {
           />
         </span>
         <select
+          className="hidden md:block"
           value={table.getState().pagination.pageSize}
           onChange={(e) => {
             table.setPageSize(Number(e.target.value));
@@ -194,8 +204,8 @@ export function Table() {
         </select>
       </div>
 
-      <div className="tablewrap">
-        <table>
+      <div className="tablewrap m-0 w-full p-0">
+        <table className="m-0 w-full p-0">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>

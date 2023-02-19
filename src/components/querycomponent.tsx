@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BsPlayFill } from "react-icons/bs";
 import { FaChevronUp } from "react-icons/fa";
-import { IoIosClose } from "react-icons/io";
 import { getSurreal, useAppState } from "../state/useAppState";
 
 export function QueryComponent() {
@@ -46,8 +45,7 @@ export function QueryComponent() {
               .catch(console.error);
           }}
         >
-          <span className="flex flex-row gap-2 self-center pl-2">
-            RUN
+          <span className="flex flex-row gap-2 self-center">
             <BsPlayFill className="icon" />
           </span>
         </button>
