@@ -19,7 +19,6 @@ export function SourceLink() {
     >
       <button className="gap-2 self-center">
         <FaGithub className="icon" />
-        <span className="self-center">{packageJson.version}</span>
       </button>
     </Link>
   );

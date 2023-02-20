@@ -17,6 +17,7 @@ specifiers:
   eslint: ^8.30.0
   eslint-config-next: 13.1.6
   flat: ^5.0.2
+  moderndash: ^0.14.1
   next: 13.1.6
   postcss: ^8.4.14
   prettier: ^2.8.1
@@ -38,6 +39,7 @@ dependencies:
   '@types/flat': 5.0.2
   clsx: 1.2.1
   flat: 5.0.2
+  moderndash: 0.14.1
   next: 13.1.6_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1828,6 +1830,11 @@ packages:
 
   /minimist/1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+
+  /moderndash/0.14.1:
+    resolution: {integrity: sha512-7ZqM4bNQpaCS8KtEs0nq9QjrSAyXtUFoaK9CI5+Mhys6pI+Qw6IDRUyRsBsN158pULykcvrRCVo/JurBY4JkYA==}
+    engines: {node: '>=19.x.x', npm: '>=8.x.x'}
+    dev: false
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}

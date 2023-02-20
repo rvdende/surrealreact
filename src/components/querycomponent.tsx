@@ -10,7 +10,7 @@ export function QueryComponent() {
 
   return (
     <section className="w-full">
-      <div className="group flex w-full flex-row gap-4">
+      <div className="group flex w-full flex-row gap-3">
         <div className="relative w-full">
           <input
             className="w-full"

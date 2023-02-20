@@ -9,6 +9,8 @@ import {
 } from "../state/useAppState";
 import { Footer } from "./footer";
 import { Tab } from "@headlessui/react";
+import { CredentialsList } from "./explorer/CredentialsList";
+import { unique } from "moderndash";
 
 function curlSignUp(host: string, data: unknown) {
   return `curl --request POST --url ${host}/signup --header 'content-type: application/json' --header 'Accept: application/json' --data '${JSON.stringify(
@@ -99,7 +101,14 @@ export function SigninRoot() {
           getSurreal()
             .getFullInfo()
             .then(() => {
-              appstate.set({ connected: true });
+              let credentialsList = structuredClone(appstate.credentialsList);
+              credentialsList.push(appstate.credentials);
+              credentialsList = unique(
+                credentialsList,
+                (a, b) => a.hostname === b.hostname
+              );
+
+              appstate.set({ connected: true, credentialsList });
               appstate.update().catch(console.error);
             })
             .catch(console.error);
@@ -282,6 +291,10 @@ export function Signin() {
         </Link>
         &nbsp; Explorer
       </h2>
+
+      <CredentialsList />
+
+      <div className="mt-5" />
 
       <Tab.Group
         onChange={(connection_screen_tab) => {

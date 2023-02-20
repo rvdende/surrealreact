@@ -3,19 +3,22 @@ import { devtools, persist } from "zustand/middleware";
 import { AuthType, SurrealClient, TBInfo } from "../surrealdbjs";
 import { DBInfo, KVInfo, NSInfo } from "../surrealdbjs/surreal_zod_info";
 
+type Credentials = {
+  hostname: string;
+  username: string;
+  password: string;
+  scope_email: string;
+  scope_pass: string;
+  ns: string;
+  db: string;
+  sc: string;
+  token: string;
+};
+
 type Provider = {
   connection_screen_tab: number;
-  credentials: {
-    hostname: string;
-    username: string;
-    password: string;
-    scope_email: string;
-    scope_pass: string;
-    ns: string;
-    db: string;
-    sc: string;
-    token: string;
-  };
+  credentials: Credentials;
+  credentialsList: Credentials[];
   connected: boolean;
   treeHidden: boolean;
   /** store stuff like collapse/expanded state */
@@ -46,6 +49,7 @@ export const useAppState = create<Provider>()(
           sc: "account",
           token: "",
         },
+        credentialsList: [],
         connected: false,
         treeHidden: false,
         treeUIdata: {},
@@ -96,9 +100,13 @@ export const useAppState = create<Provider>()(
 // singleton connection
 let surreal: SurrealClient | undefined;
 
-export function disconnectSurreal() {
+export function disconnectSurreal(options?: { silent: boolean }) {
   surreal = undefined;
-  useAppState.getState().set({ connected: false, info_kv: null, info_db: [] });
+
+  if (!options)
+    useAppState
+      .getState()
+      .set({ connected: false, info_kv: null, info_db: [] });
 }
 
 export function authtype_calc(props: {

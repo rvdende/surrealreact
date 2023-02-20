@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HiOutlineHome } from "react-icons/hi2";
+import { HiBookOpen, HiOutlineHome } from "react-icons/hi2";
 import { IoMdLogOut, IoMdRefresh } from "react-icons/io";
 import { authtype_calc, useAppState } from "../state/useAppState";
 import { QueryComponent } from "./querycomponent";
@@ -7,6 +7,11 @@ import { QueryComponent } from "./querycomponent";
 import { BiBookHeart } from "react-icons/bi";
 import { SourceLink } from "./footer";
 import clsx from "clsx";
+import { CredentialsList } from "./explorer/CredentialsList";
+
+import { unique } from "moderndash";
+import { BsBook } from "react-icons/bs";
+import { FaBook, FaGithub } from "react-icons/fa";
 
 export function Navbar() {
   const appstate = useAppState();
@@ -14,20 +19,27 @@ export function Navbar() {
   const authtype = authtype_calc(appstate.credentials);
 
   return (
-    <section className="mb-0 grid grid-cols-12 gap-3 rounded-b-none border-b-0 pt-3 pb-3">
-      <div className="col-span-full flex flex-row gap-3 px-3">
+    <section className="mb-0 grid grid-cols-12 gap-3 p-3">
+      <div className="col-span-full flex flex-row gap-3">
         <Link href="/" className="self-center">
           <button>
             <HiOutlineHome className="icon" />
           </button>
         </Link>
 
-        <SourceLink />
+        <Link
+          href="https://github.com/rvdende/surrealreact"
+          target="_blank"
+          className="self-center"
+        >
+          <button className="self-center">
+            <FaGithub className="icon" />
+          </button>
+        </Link>
 
         <Link target="_blank" href="https://surrealdb.com/docs">
-          <button className="self-center px-3 text-pink-600">
-            <BiBookHeart className="icon self-center" />
-            <span>DOCS</span>
+          <button className="self-center">
+            <FaBook className="icon self-center" />
           </button>
         </Link>
 
@@ -50,14 +62,21 @@ export function Navbar() {
             }[authtype]
           )}
           onClick={() => {
-            appstate.set({ connected: false });
+            let credentialsList = structuredClone(appstate.credentialsList);
+            credentialsList.push(appstate.credentials);
+            credentialsList = unique(
+              credentialsList,
+              (a, b) => a.hostname === b.hostname
+            );
+
+            appstate.set({ connected: false, credentialsList });
           }}
         >
           {appstate.credentials.username} <IoMdLogOut className="icon" />
         </button>
       </div>
 
-      <div className="col-span-full flex flex-row gap-3 px-3">
+      <div className="col-span-full flex flex-row gap-3 md:col-span-6">
         <button
           onClick={() => {
             appstate.update().catch(console.error);
@@ -67,6 +86,10 @@ export function Navbar() {
         </button>
 
         <QueryComponent />
+      </div>
+
+      <div className="col-span-full flex flex-row gap-3 md:col-span-6">
+        <CredentialsList />
       </div>
     </section>
   );
