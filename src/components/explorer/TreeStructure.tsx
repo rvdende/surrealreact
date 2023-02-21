@@ -26,7 +26,7 @@ export function TreeStructure({ className }: { className: string }) {
           if (!nsinfo) return null;
 
           const ns_href = `/ns/${ns}`;
-          const ns_expanded = appstate.treeUIdata[ns_href]?.collapsed ?? false;
+          const ns_expanded = appstate.treeUIdata[ns_href]?.collapsed ?? true;
 
           return (
             <div key={`ns${v}${ns}`} className={"flex flex-col "}>
