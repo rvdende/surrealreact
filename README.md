@@ -15,8 +15,8 @@ https://surrealreact.fly.dev/
 ```
 git clone https://github.com/rvdende/surrealreact
 cd surrealreact
-yarn install
-yarn start
+pnpm i
+pnpm dev
 ```
 
 Open browser at http://localhost:3000/
