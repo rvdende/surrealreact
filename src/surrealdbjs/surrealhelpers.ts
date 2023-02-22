@@ -152,3 +152,46 @@ export interface IScope {
   scopeName: string;
   definition: string;
 }
+
+export const durations = [
+  { value: "s", name: "seconds" },
+  { value: "m", name: "minutes" },
+  { value: "h", name: "hours" },
+  { value: "w", name: "weeks" },
+  { value: "y", name: "years" },
+] as const;
+
+export type Duration = (typeof durations)[number];
+
+export function buildScopeScript({
+  ns,
+  db,
+  scopeName,
+  durationNum,
+  duration,
+  scriptSignup,
+  scriptSignin,
+}: {
+  ns: string;
+  db: string;
+  scopeName: string;
+  durationNum: number;
+  duration: Duration;
+  /** ```sql
+   * CREATE user SET email = $email, pass = crypto::argon2::generate($pass)
+   * ```
+   * */
+  scriptSignup: string;
+  /**```sql
+   * SELECT * FROM user WHERE email = $email AND crypto::argon2::compare(pass, $pass)
+   * ```
+   */
+  scriptSignin: string;
+}) {
+  return `USE NS ${ns} DB ${db}; 
+DEFINE SCOPE ${scopeName} 
+SESSION ${durationNum}${duration.value} 
+SIGNUP ( ${scriptSignup} ) 
+SIGNIN ( ${scriptSignin} )
+;`;
+}

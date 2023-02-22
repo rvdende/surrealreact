@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { HiXMark } from "react-icons/hi2";
 import { getSurreal, useAppState } from "../../state/useAppState";
 import { DefineLogin } from "./DefineLogin";
+import { DefineScopes } from "./DefineScopes";
 import { DefineTable } from "./DefineTable";
 import { dbSlugs, TreeItemContent } from "./TreeStructure";
 import { User } from "./User";
@@ -57,6 +58,8 @@ export function DBView() {
       </section>
 
       <DefineTable ns={slugs.ns} db={slugs.db} />
+
+      <DefineScopes ns={slugs.ns} db={slugs.db} />
 
       <section className="paper ">
         <h3>Users</h3>

@@ -1,4 +1,4 @@
-import type { SurrealResult } from "./surrealhelpers";
+import type { Duration, SurrealResult } from "./surrealhelpers";
 import {
   surreal_zod_info_for_db,
   surreal_zod_info_for_sc,
