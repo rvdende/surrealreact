@@ -76,8 +76,17 @@ export function ViewTB() {
           <div className="h-40">
             <Editor
               // theme={props.isLight ? 'surrealist' : 'surrealist-dark'}
-              value={JSON.stringify(appstate.activeRow, null, 2)}
-              onChange={(e) => console.log(e)}
+              value={appstate.activeRow.row}
+              onChange={(e) => {
+                if (!e) return;
+                if (!appstate.activeRow) return;
+                let updated = structuredClone(appstate.activeRow);
+
+                updated.row = e;
+                appstate.set({
+                  activeRow: updated,
+                });
+              }}
               options={{
                 // readOnly: true,
                 minimap: { enabled: false },
@@ -85,6 +94,32 @@ export function ViewTB() {
               }}
               language="json"
             />
+            <button
+              className="primary"
+              onClick={() => {
+                if (!slugs.ns) return;
+                if (!slugs.db) return;
+                if (!appstate.activeRow) return;
+
+                const parsed = JSON.parse(appstate.activeRow.row) as {
+                  id: string;
+                } & object;
+
+                if (!parsed.id) return;
+
+                getSurreal()
+                  .use(slugs.ns, slugs.db)
+                  .query(
+                    `UPDATE ${parsed.id} CONTENT ${appstate.activeRow.row};`
+                  )
+                  .then(() => {
+                    appstate.update().catch(console.error);
+                  })
+                  .catch(console.error);
+              }}
+            >
+              save
+            </button>
           </div>
         )}
     </div>

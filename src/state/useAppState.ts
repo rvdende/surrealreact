@@ -32,7 +32,12 @@ type Provider = {
   info_tb: { ns: string; db: string; tb: string; tbinfo: TBInfo }[];
   update: () => Promise<void>;
   /** Keep track of table row clicks used for editor maybe other stuff in future */
-  activeRow: { ns: string; db: string; tb: string; row: object } | null;
+  activeRow: {
+    ns: string;
+    db: string;
+    tb: string;
+    row: string;
+  } | null;
 };
 
 export const useAppState = create<Provider>()(
