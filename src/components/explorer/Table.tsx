@@ -234,7 +234,7 @@ export function Table() {
                       ns: slugs.ns,
                       db: slugs.db,
                       tb: slugs.tb,
-                      row: row.original,
+                      row: JSON.stringify(row.original, null, 2),
                     },
                   });
                 }}
