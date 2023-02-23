@@ -31,6 +31,8 @@ type Provider = {
   info_db: { ns: string; db: string; dbinfo: DBInfo }[];
   info_tb: { ns: string; db: string; tb: string; tbinfo: TBInfo }[];
   update: () => Promise<void>;
+  /** Keep track of table row clicks used for editor maybe other stuff in future */
+  activeRow: object | null;
 };
 
 export const useAppState = create<Provider>()(
@@ -89,6 +91,9 @@ export const useAppState = create<Provider>()(
             info_tb: result.tbinfos,
           });
         },
+        // new stuff
+        activeRow: null
+        ///////////
       }),
       {
         name: "surrealreact",

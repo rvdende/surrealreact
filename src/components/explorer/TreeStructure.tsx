@@ -49,7 +49,7 @@ export function TreeStructure({ className }: { className: string }) {
 
                   const db_href = `/ns/${ns}/${db}`;
                   const db_expanded =
-                    appstate.treeUIdata[db_href]?.collapsed ?? false;
+                    appstate.treeUIdata[db_href]?.collapsed ?? true;
 
                   return (
                     <div key={`${ns}_${db}_${i}`} className={"flex flex-col"}>

@@ -4,11 +4,16 @@ import { HiXMark } from "react-icons/hi2";
 import { useAppState, getSurreal } from "../../state/useAppState";
 import { Table } from "./Table";
 import { dbSlugs, TreeItemContent } from "./TreeStructure";
+import { editor } from "monaco-editor";
+import Editor from "@monaco-editor/react";
+import { useState } from "react";
+
 
 export function ViewTB() {
   const appstate = useAppState();
   const router = useRouter();
   const slugs = dbSlugs(router.query.slug);
+  
 
   // const nsinfo = appstate.info_ns.find((i) => i.ns === slugs.ns)?.nsinfo;
 
@@ -65,6 +70,21 @@ export function ViewTB() {
       </section>
 
       <Table />
+      <div className="h-40">
+      <Editor
+					// theme={props.isLight ? 'surrealist' : 'surrealist-dark'}
+					value={JSON.stringify(appstate.activeRow,null,2)}
+					onChange={(e) => console.log(e)}
+					options={{
+            // readOnly: true,
+            minimap: { enabled: false },
+            lineNumbers: "off",
+          }
+          }
+					language="json"
+				/>
+        </div>
+
     </div>
   );
 }
