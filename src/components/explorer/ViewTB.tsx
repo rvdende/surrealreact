@@ -80,8 +80,7 @@ export function ViewTB() {
               onChange={(e) => {
                 if (!e) return;
                 if (!appstate.activeRow) return;
-                let updated = structuredClone(appstate.activeRow);
-
+                const updated = structuredClone(appstate.activeRow);
                 updated.row = e;
                 appstate.set({
                   activeRow: updated,
