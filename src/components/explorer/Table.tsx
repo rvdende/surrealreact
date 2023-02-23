@@ -60,7 +60,7 @@ function deriveColumnsFromRows<
 
 export function Table() {
   const appstate = useAppState();
-  
+
   const slugs = dbSlugs(useRouter().query.slug);
   const [rows, setRows] = useState<never[]>();
   // const [count, setCount] = useState(0);
@@ -221,11 +221,24 @@ export function Table() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-pink-400/20" 
-              onClick={() => {
-                appstate.set({activeRow: row.original});
-                console.log(row.original);
-              }}>
+              <tr
+                key={row.id}
+                className="hover:bg-pink-400/20"
+                onClick={() => {
+                  if (!slugs.ns) return;
+                  if (!slugs.db) return;
+                  if (!slugs.tb) return;
+
+                  appstate.set({
+                    activeRow: {
+                      ns: slugs.ns,
+                      db: slugs.db,
+                      tb: slugs.tb,
+                      row: row.original,
+                    },
+                  });
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -233,7 +246,6 @@ export function Table() {
                 ))}
               </tr>
             ))}
-            
           </tbody>
         </table>
       </div>
