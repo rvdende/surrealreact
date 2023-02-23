@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
-import { getSurreal } from "../../state/useAppState";
+import { getSurreal, useAppState } from "../../state/useAppState";
 import flatten from "flat";
 import { SurrealResult } from "../../surrealdbjs";
 import {
@@ -59,6 +59,8 @@ function deriveColumnsFromRows<
 }
 
 export function Table() {
+  const appstate = useAppState();
+
   const slugs = dbSlugs(useRouter().query.slug);
   const [rows, setRows] = useState<never[]>();
   // const [count, setCount] = useState(0);
@@ -219,7 +221,24 @@ export function Table() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
+              <tr
+                key={row.id}
+                className="hover:bg-pink-400/20"
+                onClick={() => {
+                  if (!slugs.ns) return;
+                  if (!slugs.db) return;
+                  if (!slugs.tb) return;
+
+                  appstate.set({
+                    activeRow: {
+                      ns: slugs.ns,
+                      db: slugs.db,
+                      tb: slugs.tb,
+                      row: row.original,
+                    },
+                  });
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
