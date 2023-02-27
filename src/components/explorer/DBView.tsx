@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiXMark } from "react-icons/hi2";
 import { getSurreal, useAppState } from "../../state/useAppState";
+
+import DialogModal from "../DialogModal";
 import { DefineLogin } from "./DefineLogin";
 import { DefineScopes } from "./DefineScopes";
 import { DefineTable } from "./DefineTable";
@@ -35,26 +37,44 @@ export function DBView() {
         </Link>
         <TreeItemContent text={slugs.db} type="db" className="flex-0 pl-1" />
         <div className="flex-1" />
-        <button
-          className="delete"
-          onClick={() => {
-            if (!slugs.ns) return;
-            if (!slugs.db) return;
-            getSurreal()
-              .use(slugs.ns, slugs.db)
-              .querySimple(`REMOVE DATABASE ${slugs.db} `)
-              .catch((err) => {
-                console.log(err);
-              })
-              .finally(() => {
-                if (!slugs.ns) return;
-                router.push(`/ns/${slugs.ns}`).catch(console.error);
-                appstate.update().catch(console.error);
-              });
-          }}
+
+        {/* delete button */}
+
+        <DialogModal
+          buttonContents={
+            <>
+              <HiXMark className="icon" />
+              Delete
+            </>
+          }
         >
-          <HiXMark className="icon" />
-        </button>
+          <div className=" p-4 text-lg font-bold ">
+            Are you shure you want to delete this Data Base
+          </div>
+          <button
+            className="inline-flex rounded border border-transparent bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-red-500"
+            onClick={() => {
+              if (!slugs.ns) return;
+              if (!slugs.db) return;
+
+              getSurreal()
+                .use(slugs.ns, slugs.db)
+                .querySimple(`REMOVE DATABASE ${slugs.db} `)
+                .catch((err) => {
+                  console.log(err);
+                })
+                .finally(() => {
+                  if (!slugs.ns) return;
+                  router.push(`/ns/${slugs.ns}`).catch(console.error);
+                  appstate.update().catch(console.error);
+                });
+            }}
+          >
+            Confirm
+          </button>
+        </DialogModal>
+
+        {/* modal */}
       </section>
 
       <DefineTable ns={slugs.ns} db={slugs.db} />
