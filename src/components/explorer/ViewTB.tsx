@@ -43,7 +43,6 @@ export function ViewTB() {
             />
           </button>
         </Link>
-
         <TreeItemContent text={slugs.tb} type="tb" className="flex-0 pl-1" />
         <div className="flex-1" />
         <DialogModal
@@ -54,12 +53,14 @@ export function ViewTB() {
             </>
           }
         >
+          <div className=" p-4 text-lg font-bold ">
+            Are you shure you want to delete this Table
+          </div>
           <button
             className="inline-flex rounded border border-transparent bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-red-500"
             onClick={() => {
               if (!slugs.ns) return;
               if (!slugs.db) return;
-
               getSurreal()
                 .use(slugs.ns, slugs.db)
                 .querySimple(`REMOVE TABLE ${slugs.tb} `)
