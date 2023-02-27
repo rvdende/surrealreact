@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiXMark } from "react-icons/hi2";
 import { getSurreal, useAppState } from "../../state/useAppState";
-import { DeleteConfirm } from "../DeleteConfirm";
+
 import DialogModal from "../DialogModal";
 import { DefineLogin } from "./DefineLogin";
 import { DefineScopes } from "./DefineScopes";
@@ -48,8 +48,8 @@ export function DBView() {
             </>
           }
         >
-          Are you sure you want to delete?
           <button
+            className="inline-flex rounded border border-transparent bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-red-500"
             onClick={() => {
               if (!slugs.ns) return;
               if (!slugs.db) return;

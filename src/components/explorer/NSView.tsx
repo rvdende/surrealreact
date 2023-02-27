@@ -8,6 +8,8 @@ import { DefineDatabase } from "./DefineDatabase";
 import { DefineLogin } from "./DefineLogin";
 import { dbSlugs, TreeItemContent } from "./TreeStructure";
 import { User } from "./User";
+import DialogModal from "../DialogModal";
+import { HiXMark } from "react-icons/hi2";
 
 export function NSView() {
   const appstate = useAppState();
@@ -23,25 +25,35 @@ export function NSView() {
 
         <div className="flex-1" />
 
-        <button
-          className="delete "
-          onClick={() => {
-            if (!slugs.ns) return;
-            getSurreal()
-              .use(slugs.ns)
-              .querySimple(`REMOVE NAMESPACE ${slugs.ns} `)
-              .catch((err) => {
-                console.log(err);
-              })
-              .finally(() => {
-                if (!slugs.ns) return;
-                router.push(`/`).catch(console.error);
-                appstate.update().catch(console.error);
-              });
-          }}
+        <DialogModal
+          buttonContents={
+            <>
+              <HiXMark className="icon" />
+              Delete
+            </>
+          }
         >
-          delete NS {slugs.ns}
-        </button>
+          <button
+            className="inline-flex rounded border border-transparent bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-red-500"
+            onClick={() => {
+              if (!slugs.ns) return;
+
+              getSurreal()
+                .use(slugs.ns)
+                .querySimple(`REMOVE NAMESPACE ${slugs.ns} `)
+                .catch((err) => {
+                  console.log(err);
+                })
+                .finally(() => {
+                  if (!slugs.ns) return;
+                  router.push(`/`).catch(console.error);
+                  appstate.update().catch(console.error);
+                });
+            }}
+          >
+            Confirm
+          </button>
+        </DialogModal>
       </section>
 
       <hr />

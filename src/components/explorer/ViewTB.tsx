@@ -7,6 +7,7 @@ import { dbSlugs, TreeItemContent } from "./TreeStructure";
 import { editor } from "monaco-editor";
 import Editor from "@monaco-editor/react";
 import { useState } from "react";
+import DialogModal from "../DialogModal";
 
 export function ViewTB() {
   const appstate = useAppState();
@@ -45,26 +46,36 @@ export function ViewTB() {
 
         <TreeItemContent text={slugs.tb} type="tb" className="flex-0 pl-1" />
         <div className="flex-1" />
-        <button
-          className="delete"
-          onClick={() => {
-            if (!slugs.ns) return;
-            if (!slugs.db) return;
-            getSurreal()
-              .use(slugs.ns, slugs.db)
-              .querySimple(`REMOVE DATABASE ${slugs.db} `)
-              .catch((err) => {
-                console.log(err);
-              })
-              .finally(() => {
-                if (!slugs.ns) return;
-                router.push(`/ns/${slugs.ns}`).catch(console.error);
-                appstate.update().catch(console.error);
-              });
-          }}
+        <DialogModal
+          buttonContents={
+            <>
+              <HiXMark className="icon" />
+              Delete
+            </>
+          }
         >
-          <HiXMark className="icon" />
-        </button>
+          <button
+            className="inline-flex rounded border border-transparent bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-red-500"
+            onClick={() => {
+              if (!slugs.ns) return;
+              if (!slugs.db) return;
+
+              getSurreal()
+                .use(slugs.ns, slugs.db)
+                .querySimple(`REMOVE TABLE ${slugs.tb} `)
+                .catch((err) => {
+                  console.log(err);
+                })
+                .finally(() => {
+                  if (!slugs.ns) return;
+                  router.push(`/ns/${slugs.ns}`).catch(console.error);
+                  appstate.update().catch(console.error);
+                });
+            }}
+          >
+            Confirm
+          </button>
+        </DialogModal>
       </section>
 
       <Table />
