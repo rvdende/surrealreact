@@ -61,6 +61,7 @@ export function ViewTB() {
             onClick={() => {
               if (!slugs.ns) return;
               if (!slugs.db) return;
+              if (!slugs.tb) return;
               getSurreal()
                 .use(slugs.ns, slugs.db)
                 .querySimple(`REMOVE TABLE ${slugs.tb} `)
