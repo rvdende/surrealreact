@@ -70,7 +70,7 @@ export function DefineScopes({ ns, db }: { ns: string; db: string }) {
         onChange={(e) => setScriptSignup(e.target.value)}
       />
 
-      <label className="mt-4">SIGNUP</label>
+      <label className="mt-4">SIGNIN</label>
       <input
         value={scriptSignin}
         className="w-full"

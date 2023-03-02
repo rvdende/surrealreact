@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiXMark } from "react-icons/hi2";
 import { getSurreal, useAppState } from "../../state/useAppState";
+
+import DialogModal from "../DialogModal";
 import { DefineLogin } from "./DefineLogin";
 import { DefineScopes } from "./DefineScopes";
 import { DefineTable } from "./DefineTable";
@@ -45,6 +47,7 @@ export function DBView() {
         </Link>
         <TreeItemContent text={slugs.db} type="db" className="flex-0 pl-1" />
         <div className="flex-1" />
+
         <DialogModal
           buttonContents={
             <>
@@ -78,6 +81,7 @@ export function DBView() {
             Confirm
           </button>
         </DialogModal>
+
       </section>
 
       <DefineTable ns={slugs.ns} db={slugs.db} />
