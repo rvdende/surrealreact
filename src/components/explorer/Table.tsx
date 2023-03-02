@@ -130,7 +130,16 @@ export function Table() {
           setRows(data_rows);
       })
       .catch(console.error);
-  }, [slugs.ns, slugs.db, slugs.tb, pageSize, pageIndex, pageCount, rows]);
+  }, [
+    slugs.ns,
+    slugs.db,
+    slugs.tb,
+    pageSize,
+    pageIndex,
+    pageCount,
+    rows,
+    appstate.latestData,
+  ]);
 
   if (!rows) return <div>loading...</div>;
 
