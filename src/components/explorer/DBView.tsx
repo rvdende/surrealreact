@@ -2,13 +2,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiXMark } from "react-icons/hi2";
 import { getSurreal, useAppState } from "../../state/useAppState";
-
-import DialogModal from "../DialogModal";
 import { DefineLogin } from "./DefineLogin";
 import { DefineScopes } from "./DefineScopes";
 import { DefineTable } from "./DefineTable";
 import { dbSlugs, TreeItemContent } from "./TreeStructure";
 import { User } from "./User";
+import DialogModal from "../DialogModal";
 
 export function DBView() {
   const appstate = useAppState();
@@ -35,11 +34,17 @@ export function DBView() {
             />
           </button>
         </Link>
+        <Link href={`/ns/${slugs.ns}/${slugs.db}`}>
+          <button>
+            <TreeItemContent
+              text={slugs.db}
+              type="db"
+              className="flex-0 pl-1"
+            />
+          </button>
+        </Link>
         <TreeItemContent text={slugs.db} type="db" className="flex-0 pl-1" />
         <div className="flex-1" />
-
-        {/* delete button */}
-
         <DialogModal
           buttonContents={
             <>
@@ -73,8 +78,6 @@ export function DBView() {
             Confirm
           </button>
         </DialogModal>
-
-        {/* modal */}
       </section>
 
       <DefineTable ns={slugs.ns} db={slugs.db} />
@@ -86,7 +89,7 @@ export function DBView() {
         <DefineLogin ns={slugs.ns} db={slugs.db} />
         <div className="flex flex-col gap-1 ">
           {dbinfo &&
-            Object.entries(dbinfo.dl).map(([username, definition]) => {
+            Object.entries(dbinfo.dl).map(([username]) => {
               if (!slugs.ns || !slugs.db) return;
               return (
                 <User

@@ -38,6 +38,8 @@ type Provider = {
     tb: string;
     row: string;
   } | null;
+  /** we're going to use this to force an update on the table, could be useful elsewhere... */
+  latestData: Date;
 };
 
 export const useAppState = create<Provider>()(
@@ -94,11 +96,13 @@ export const useAppState = create<Provider>()(
             info_ns: result.nsinfos,
             info_db: result.dbinfos,
             info_tb: result.tbinfos,
+            latestData: new Date(),
           });
         },
         // new stuff
         activeRow: null,
         ///////////
+        latestData: new Date(),
       }),
       {
         name: "surrealreact",
