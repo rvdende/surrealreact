@@ -9,7 +9,6 @@ import { DefineScopes } from "./DefineScopes";
 import { DefineTable } from "./DefineTable";
 import { dbSlugs, TreeItemContent } from "./TreeStructure";
 import { User } from "./User";
-import DialogModal from "../DialogModal";
 
 export function DBView() {
   const appstate = useAppState();
@@ -81,7 +80,6 @@ export function DBView() {
             Confirm
           </button>
         </DialogModal>
-
       </section>
 
       <DefineTable ns={slugs.ns} db={slugs.db} />
