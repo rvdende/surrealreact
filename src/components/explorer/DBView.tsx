@@ -35,15 +35,6 @@ export function DBView() {
             />
           </button>
         </Link>
-        <Link href={`/ns/${slugs.ns}/${slugs.db}`}>
-          <button>
-            <TreeItemContent
-              text={slugs.db}
-              type="db"
-              className="flex-0 pl-1"
-            />
-          </button>
-        </Link>
         <TreeItemContent text={slugs.db} type="db" className="flex-0 pl-1" />
         <div className="flex-1" />
 
