@@ -11,6 +11,7 @@ import { Footer } from "./footer";
 import { Tab } from "@headlessui/react";
 import { CredentialsList } from "./explorer/CredentialsList";
 import { unique } from "moderndash";
+import { useState } from "react";
 
 function curlSignUp(host: string, data: unknown) {
   return `curl --request POST --url ${host}/signup --header 'content-type: application/json' --header 'Accept: application/json' --data '${JSON.stringify(
@@ -20,6 +21,9 @@ function curlSignUp(host: string, data: unknown) {
 
 export function SigninRoot() {
   const appstate = useAppState();
+
+  const [errormessage, setErrormessage] = useState<string>();
+
   return (
     <section className="flex w-full flex-col">
       <label>user</label>
@@ -95,6 +99,7 @@ export function SigninRoot() {
       <button
         className="primary mt-4 py-3"
         onClick={() => {
+          setErrormessage(undefined);
           console.log("connecting to", appstate.credentials);
           appstate.set({ treeHidden: false, querytext: undefined });
           disconnectSurreal();
@@ -111,11 +116,23 @@ export function SigninRoot() {
               appstate.set({ connected: true, credentialsList });
               appstate.update().catch(console.error);
             })
-            .catch(console.error);
+            .catch((err) => {
+              console.error(err);
+              setErrormessage(`Could not connect.`);
+            });
         }}
       >
         CONNECT
       </button>
+
+      {errormessage && (
+        <div
+          className="relative mt-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+          role="alert"
+        >
+          <span className="block sm:inline">{errormessage}</span>
+        </div>
+      )}
     </section>
   );
 }
