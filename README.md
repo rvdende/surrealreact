@@ -1,6 +1,5 @@
 # Surreal React for the playground for Data Driver
 
-*From the author: "SurrealDB explorer.. its a work in progress but have fun (😊)"*
 
 ![screenshot](https://raw.githubusercontent.com/rvdende/surrealreact/main/screenshot.png)
 
@@ -13,12 +12,11 @@ https://surrealreact.fly.dev/
 ```
 git clone https://github.com/rvdende/surrealreact
 cd surrealreact
-yarn install
-yarn start
+pnpm i
+pnpm dev
 ```
 
 Open browser at http://localhost:3000/
-
 
 # To connect to a localhost surreal instance:
 
@@ -26,8 +24,6 @@ Open browser at http://localhost:3000/
 surreal start --log debug --user root --pass root memory
 ```
 
-
-url: http://0.0.0.0:8000/rpc   
-user: root   
-pass: root   
-
+url: http://0.0.0.0:8000/rpc  
+user: root  
+pass: root

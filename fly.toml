@@ -13,7 +13,7 @@ processes = []
 
 [[services]]
   http_checks = []
-  internal_port = 8080
+  internal_port = 3000
   processes = ["app"]
   protocol = "tcp"
   script_checks = []
@@ -32,7 +32,7 @@ processes = []
     port = 443
 
   [[services.ports]]
-    port = 8080
+    port = 3000
 
   [[services.tcp_checks]]
     grace_period = "1s"

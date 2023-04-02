@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-zinc-800 font-sans leading-tight text-zinc-300;
+  }
+
+  h2 {
+    @apply text-3xl font-medium text-zinc-300;
+  }
+
+  h3 {
+    @apply mb-4 text-2xl font-medium text-zinc-300;
+  }
+
+  input,
+  input[type="number"] {
+    @apply input;
+  }
+
+  select {
+    @apply input;
+  }
+
+  a {
+    @apply text-pink-600 hover:text-pink-500;
+  }
+
+  a.decorated {
+    @apply hover:underline hover:decoration-dotted;
+  }
+
+  label {
+    @apply mb-2 text-zinc-400;
+  }
+
+  p {
+    @apply mb-1 text-sm  text-zinc-400;
+  }
+
+  button {
+    @apply button;
+  }
+
+  button.primary {
+    @apply bg-pink-700  py-2 px-4 uppercase tracking-wider text-white hover:bg-pink-600 active:bg-pink-500;
+  }
+
+  button.delete {
+    @apply text-white hover:bg-rose-600;
+  }
+
+  button.active {
+    @apply bg-pink-700/30 hover:bg-pink-600/50;
+  }
+
+  div {
+    @apply border-zinc-500;
+  }
+
+  td {
+    @apply border-t border-zinc-700/30 text-left;
+  }
+
+  td {
+    @apply border-t border-r border-zinc-900 py-2 px-2 text-zinc-300 odd:bg-zinc-500/10 even:bg-zinc-600/10;
+  }
+
+  th {
+    @apply m-1 justify-start gap-4   p-[0.85rem] px-2.5 font-bold text-zinc-100 first:rounded-tl last:rounded-tr  hover:text-green-300;
+  }
+
+  table {
+    @apply mt-4 bg-white/5 text-left text-xs;
+  }
+
+  tr {
+    @apply hover:bg-zinc-700/50;
+  }
+
+  pre {
+    @apply scrollbot overflow-x-auto rounded bg-black/30 p-2 text-xs text-zinc-300;
+  }
+
+  hr {
+    @apply m-0 border-zinc-600 p-0;
+  }
+}
+
+@layer components {
+  .button {
+    @apply flex flex-row justify-center gap-4 whitespace-nowrap  rounded  border-zinc-800 bg-white/10 p-2 px-2.5 font-bold tracking-wide text-zinc-200 transition hover:bg-purple-400/20 hover:text-pink-300 active:bg-zinc-500;
+  }
+
+  .input {
+    @apply rounded  bg-white/10  p-2 text-zinc-200 outline-none  focus:border-none focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 hover:border-pink-500/60 hover:bg-white/5 active:border-none active:outline-none active:ring-0;
+  }
+  .paper {
+    @apply flex flex-col rounded border border-zinc-700 bg-white/5 p-3 text-zinc-300 shadow-xl;
+  }
+
+  .icon {
+    @apply h-5 w-5 self-center;
+  }
+
+  .panel {
+    @apply m-2 flex flex-row gap-4 rounded p-4;
+  }
+  .tablewrap {
+    @apply scrollbot col-span-full overflow-x-scroll pb-2 scrollbar-thin;
+  }
+
+  .scrollbot {
+    @apply scrollbar-thin scrollbar-track-zinc-700/30 scrollbar-thumb-pink-600;
+  }
+}
