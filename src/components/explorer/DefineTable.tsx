@@ -1,9 +1,10 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { getSurreal, useAppState } from "../../state/useAppState";
 
 export function DefineTable({ ns, db }: { ns: string; db: string }) {
   const appstate = useAppState();
-
+  const router = useRouter();
   const [name, setname] = useState<string>("");
 
   return (
@@ -24,8 +25,9 @@ export function DefineTable({ ns, db }: { ns: string; db: string }) {
             getSurreal()
               .use(ns, db)
               .query(`DEFINE TABLE ${name};`)
-              .then(() => {
-                appstate.update().catch(console.error);
+              .then(async () => {
+                await appstate.update().catch(console.error);
+                await router.push(`/ns/${ns}/${db}/${name}`);
               })
               .catch(console.error);
           }}

@@ -19,6 +19,7 @@ import {
   BsChevronLeft,
   BsChevronRight,
 } from "react-icons/bs";
+import { HiXMark } from "react-icons/hi2";
 
 // type UnknownRow = { id: string } & { [index: string]: unknown };
 
@@ -111,7 +112,7 @@ export function Table() {
         `SELECT count() as count FROM ${slugs.tb} GROUP BY count; `
       )
       .then((r) => {
-        const data_count = r[0]?.result[0].count;
+        const data_count = r[0]?.result[0]?.count ?? 0;
         const data_pagecount = Math.ceil(data_count / pageSize);
         if (data_pagecount != pageCount) setPageCount(data_pagecount);
       })
@@ -215,6 +216,7 @@ export function Table() {
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
+                <th className="w-1"></th>
                 {headerGroup.headers.map((header) => (
                   <th key={header.id}>
                     {header.isPlaceholder
@@ -248,6 +250,30 @@ export function Table() {
                   });
                 }}
               >
+                <td>
+                  <button
+                    className="bg-transparent"
+                    onClick={(e) => {
+                      if (!slugs.ns) return;
+                      if (!slugs.db) return;
+                      if (!slugs.tb) return;
+
+                      e.stopPropagation();
+                      const { id } = row.original as unknown as { id: string };
+
+                      getSurreal()
+                        .use(slugs.ns, slugs.db)
+                        .query(`delete ${id}`)
+                        .then(async () => {
+                          await appstate.update().catch(console.error);
+                          appstate.set({ activeRow: undefined });
+                        })
+                        .catch(console.error);
+                    }}
+                  >
+                    <HiXMark className="icon" />
+                  </button>
+                </td>
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

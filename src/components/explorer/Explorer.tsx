@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useAppState } from "../../state/useAppState";
 import { DBView } from "./DBView";
+import { DefineNamespace } from "./DefineNamespace";
 import { NSView } from "./NSView";
 import { Table } from "./Table";
 import { TreeStructure } from "./TreeStructure";
@@ -44,11 +45,18 @@ export function Explorer() {
           )}
         >
           {onLandingPage && (
-            <div className="paper ml-0 flex flex-col gap-3 md:ml-3">
-              <h1>Hi there!</h1>
-              <hr />
-              <p>Thank you for using SurrealReact</p>
-            </div>
+            <>
+              <div className="paper ml-0 flex flex-col gap-3 md:ml-3">
+                <h1>Hi there!</h1>
+                <hr />
+                <p>
+                  Thank you for using SurrealReact. You can create a new
+                  namespace below.
+                </p>
+
+                <DefineNamespace />
+              </div>
+            </>
           )}
 
           {showNS && <NSView />}
