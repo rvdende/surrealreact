@@ -58,11 +58,11 @@ export default function DialogModal({
                     as="h3"
                     className="inline-flex space-x-32 p-2 text-2xl font-bold text-red-500 "
                   >
-                    <ExclamationTriangleIcon className="h-10 w-10  text-red-500" />
+                    <ExclamationTriangleIcon className="h-6 w-6  text-red-500" />
                     Delete Item !!
                     <button
                       type="button"
-                      className=" rounded  bg-zinc-600  px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-white "
+                      className=" rounded-full bg-zinc-600  px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-white "
                       onClick={closeModal}
                     >
                       <HiXMark className="icon" />
