@@ -34,7 +34,7 @@ export function NSView() {
           }
         >
           <div className=" p-4 text-lg font-bold ">
-            Are you shure you want to delete this Name Space
+            Are you sure you want to delete this Name Space
           </div>
           <button
             className="inline-flex rounded border border-transparent bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 hover:text-red-500"
